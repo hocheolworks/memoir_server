@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'memoir_server',
-      script: 'index.js',
+      script: 'main.js',
     },
   ],
   deploy: {
