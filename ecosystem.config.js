@@ -9,7 +9,7 @@ module.exports = {
     production: {
       user: 'ubuntu',
       host: '15.164.103.217',
-      path: '/home/ubuntu/memoir_server/dist',
+      path: '/home/ubuntu/memoir_server/',
       repo: 'git@github.com:hocheolworks/memoir_server.git',
       ref: 'origin/main',
       key: '/Users/jeongcheol/memoir_prd.pem',
