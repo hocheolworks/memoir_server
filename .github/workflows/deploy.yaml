@@ -13,10 +13,10 @@ jobs:
     strategy:
       matrix:
         node-version: ['16.x']
-	
+
     steps:
       - uses: actions/checkout@v2
-	
+
       # Initialize Node.js
       - name: Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
