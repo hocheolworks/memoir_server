@@ -8,8 +8,8 @@ module.exports = {
   deploy: {
     production: {
       user: 'ubuntu',
-      host: '172-31-38-79',
-      path: '/home/ubuntu/memoir_server',
+      host: '172.31.38.79',
+      path: '/home/ubuntu/memoir_prd.pem',
       repo: 'git@github.com:hocheolworks/memoir_server.git',
       ref: 'origin/main',
       key: '/Users/jeongcheol/memoir_server.pem',
