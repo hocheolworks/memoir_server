@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'memoir_server',
-      script: '/main.js',
+      script: 'dist/main.js',
     },
   ],
   deploy: {
@@ -13,7 +13,8 @@ module.exports = {
       repo: 'git@github.com:hocheolworks/memoir_server.git',
       ref: 'origin/main',
       key: '/Users/jeongcheol/memoir_prd.pem',
-      'post-deploy': 'npm i; pm2 reload ecosystem.config.js --env production',
+      'post-deploy':
+        'npm i; npm run build; pm2 start dist/main.js --name memoir_server;',
     },
   },
 };
