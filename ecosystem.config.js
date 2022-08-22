@@ -8,7 +8,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'ubuntu',
-      host: '15.164.103.217',
+      host: '54.180.51.124',
       path: '/home/ubuntu/memoir_server/',
       repo: 'git@github.com:hocheolworks/memoir_server.git',
       ref: 'origin/main',
