@@ -34,8 +34,4 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-
-#pm2
-ecosystem.config.js
-
 .envs
