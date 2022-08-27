@@ -4,6 +4,12 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+/**
+ * ENV 설정
+ */
+let envFilePath = '.envs';
+if (process.env.NODE_ENV === 'production') envFilePath = '.envs';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.envs', isGlobal: true }),

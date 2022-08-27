@@ -3,6 +3,13 @@ module.exports = {
     {
       name: 'memoir_server',
       script: 'main.js',
+      env: {
+        COMMON_VARIABLE: 'true',
+        NODE_ENV: 'development',
+      },
+      env_production: {
+        NODE_ENV: 'production',
+      },
     },
   ],
   deploy: {
