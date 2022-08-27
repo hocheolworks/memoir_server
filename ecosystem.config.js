@@ -5,7 +5,7 @@ module.exports = {
       script: 'main.js',
       env: {
         COMMON_VARIABLE: 'true',
-        NODE_ENV: 'development',
+        NODE_ENV: 'production',
       },
       env_production: {
         NODE_ENV: 'production',
@@ -22,7 +22,7 @@ module.exports = {
       key: '/Users/jeongcheol/memoir_prd.pem',
       'pre-build': 'git pull',
       'post-deploy':
-        'npm i; npm run build; pm2 restart dist/main.js --name memoir_server --update-env;',
+        'npm i; npm run build; pm2 restart dist/main.js --name memoir_server;',
     },
   },
 };
