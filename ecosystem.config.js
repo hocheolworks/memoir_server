@@ -22,7 +22,7 @@ module.exports = {
       key: '/Users/jeongcheol/memoir_prd.pem',
       'pre-build': 'git pull',
       'post-deploy':
-        'npm i; npm run build; pm2 restart dist/main.js --name memoir_server;',
+        'npm i; npm run build; pm2 restart dist/main.js --name memoir_server --env production;',
     },
   },
 };
