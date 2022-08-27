@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'production') envFilePath = '.envs';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.envs', isGlobal: true }),
+    ConfigModule.forRoot({ envFilePath: envFilePath, isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
