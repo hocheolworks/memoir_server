@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production pm2 stop memoir_server && pm2 start dist/main.js --name memoir_server --env production --update-env",
+    "start:prod": "pm2 stop memoir_server && cross-env NODE_ENV=production pm2 start dist/main.js --name memoir_server --env production --update-env",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
