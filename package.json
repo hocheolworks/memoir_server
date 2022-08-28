@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.0",
     "@nestjs/typeorm": "^9.0.1",
+    "cross-env": "^7.0.3",
     "express-basic-auth": "^1.2.1",
     "mysql2": "^2.3.3",
     "pg": "^8.8.0",
