@@ -7,9 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 /**
  * ENV 설정
  */
-let envFilePath = '.envs';
+let envFilePath = './.envs';
 if (process.env.NODE_ENV === 'production') {
-  envFilePath = '.envs';
+  envFilePath = './.envs';
   console.log(process.env.NODE_ENV);
   console.log(envFilePath);
   console.log(process.env.DB_HOST);
