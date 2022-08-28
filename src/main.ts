@@ -5,13 +5,14 @@ import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const SWAGGER_PW = process.env.SWAGGER_PW;
 
   app.use(
     ['/docs', '/docs-json'],
     basicAuth({
       challenge: true,
       users: {
-        hochelworks: 'ajtskawjdcjfdl',
+        hocheolworks: SWAGGER_PW,
       },
     }),
   );
