@@ -14,6 +14,7 @@ if (process.env.NODE_ENV === 'production') {
   console.log(envFilePath);
   console.log(process.env.DB_HOST);
   console.log(process.env.DB_USERNAME);
+  console.log(process.env);
 }
 @Module({
   imports: [
