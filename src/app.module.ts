@@ -8,8 +8,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
  * ENV 설정
  */
 let envFilePath = '.envs';
-if (process.env.NODE_ENV === 'production') envFilePath = '.envs';
-
+if (process.env.NODE_ENV === 'production') {
+  envFilePath = '.envs';
+  console.log(process.env.NODE_ENV);
+  console.log(envFilePath);
+}
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: envFilePath, isGlobal: true }),
