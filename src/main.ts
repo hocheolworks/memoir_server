@@ -9,7 +9,7 @@ async function bootstrap() {
   const SWAGGER_PW = process.env.SWAGGER_PW;
 
   app.use(
-    ['/docs', '/docs-json'],
+    ['api/docs'],
     basicAuth({
       challenge: true,
       users: {
