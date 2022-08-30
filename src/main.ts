@@ -6,14 +6,16 @@ import * as basicAuth from 'express-basic-auth';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  const SWAGGER_ID = process.env.SWAGGER_ID;
   const SWAGGER_PW = process.env.SWAGGER_PW;
+  const SWAGGER_PATH = process.env.SWAGGER_PATH;
 
   app.use(
-    ['api/docs'],
+    [SWAGGER_PATH, 'docs'],
     basicAuth({
       challenge: true,
       users: {
-        hocheolworks: SWAGGER_PW,
+        [SWAGGER_ID]: SWAGGER_PW,
       },
     }),
   );
@@ -23,7 +25,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup(SWAGGER_PATH, app, document);
 
   await app.listen(3000);
 }
