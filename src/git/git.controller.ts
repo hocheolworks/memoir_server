@@ -11,7 +11,7 @@ export class GitController {
   }
 
   @Post('temp')
-  createRepository(): string {
-    return this.gitService.getHello();
+  createRepository() {
+    return this.gitService.createRepository();
   }
 }

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GitModule } from './git/git.module';
+import { UserModule } from './user/user.module';
 
 /**
  * ENV 설정
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
       autoLoadEntities: true,
     }),
     GitModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
