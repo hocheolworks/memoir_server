@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GitModule } from './git/git.module';
 
 /**
  * ENV 설정
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === 'production') {
       synchronize: true,
       autoLoadEntities: true,
     }),
+    GitModule,
   ],
   controllers: [AppController],
   providers: [AppService],
