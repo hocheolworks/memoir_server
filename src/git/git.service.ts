@@ -5,6 +5,9 @@ import {
   CleanOptions,
   SimpleGitOptions,
 } from 'simple-git';
+import gitConstants from './git.constants';
+import axios, { AxiosResponse } from 'axios';
+
 @Injectable()
 export class GitService {
   getHello(): string {
@@ -12,6 +15,15 @@ export class GitService {
   }
 
   async createRepository() {
+    const createRepositoryUrl = gitConstants.requestUrl.createRepository;
+
+    const { data } = await axios.get(createRepositoryUrl, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        // Authorization: `token ${access_token}`,
+      },
+    });
+
     const options: Partial<SimpleGitOptions> = {
       baseDir: process.cwd(),
       binary: 'git',

@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GitModule } from './git/git.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import UserInfoEntity from './user/user.entity';
 
 /**
  * ENV 설정
@@ -28,12 +30,13 @@ if (process.env.NODE_ENV === 'production') {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [],
+      entities: [UserInfoEntity],
       synchronize: true,
       autoLoadEntities: true,
     }),
     GitModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

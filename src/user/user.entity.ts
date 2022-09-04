@@ -1,24 +1,46 @@
 /* eslint-disable prettier/prettier */
 import { CoreEntity } from 'src/common/entities/core.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 @Entity({ name: 'userInfo' })
-class CustomerInfoEntity extends CoreEntity {
+class UserInfoEntity extends CoreEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
-    description: '이메일 혹은 문자번호 값',
-    example: 'example@gmail.com',
+    description: '갓허브 id',
+    example: 'Bliss96',
     nullable: false,
   })
   @IsNotEmpty()
   @IsString()
   @Length(1, 200)
+  @Column({ nullable: false, length: 200, unique: true })
+  githubId: string;
+
+  @ApiProperty({
+    description: '블로그 이름',
+    example: '개발새발ㅋㅋ',
+    nullable: false,
+  })
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
   @Column({ nullable: false, length: 200 })
-  key: string;
+  blogName: string;
+
+  @ApiProperty({
+    description: 'email',
+    example: 'ajtskawjdcjfdl@naver.com',
+    nullable: false,
+  })
+  @IsNotEmpty()
+  @IsEmail()
+  @Length(1, 200)
+  @Column({ nullable: false, length: 200, unique: true })
+  email: string;
 }
 
-export default CustomerInfoEntity;
+export default UserInfoEntity;

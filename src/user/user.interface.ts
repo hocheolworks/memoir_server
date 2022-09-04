@@ -4,4 +4,6 @@ export interface IGithubUserTypes {
   name: string;
   description: string;
   location: string;
+  githubAccessToken: string;
+  isMember: boolean;
 }

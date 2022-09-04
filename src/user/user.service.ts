@@ -2,17 +2,46 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { IGithubUserTypes } from './user.interface';
 import { GithubCodeDto } from './dtos/user.dto';
+import { Repository } from 'typeorm';
+import UserInfoEntity from './user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import userConstants from './user.constants';
+
+// This should be a real class/interface representing a user entity
+export type User = any;
 
 @Injectable()
 export default class UserService {
+  constructor(
+    @InjectRepository(UserInfoEntity)
+    private readonly userInfoRepository: Repository<UserInfoEntity>,
+  ) {}
+
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'john',
+      password: 'changeme',
+    },
+    {
+      userId: 2,
+      username: 'maria',
+      password: 'guess',
+    },
+  ];
+
+  async findOne(username: string): Promise<User | undefined> {
+    return this.users.find((user) => user.username === username);
+  }
+
   /**
-   * 회원가입
+   * 로그인 및 회원가입
    */
   async getGithubInfo(githubCodeDto: GithubCodeDto): Promise<IGithubUserTypes> {
     const { code } = githubCodeDto;
     const CLIENT_ID = process.env.CLIENT_ID;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
-    const getTokenUrl = process.env.GET_TOKEN_URL;
+    const getTokenUrl = userConstants.requestUrl.getAccessTokenUrl;
 
     const request = {
       code,
@@ -26,26 +55,30 @@ export default class UserService {
       },
     });
 
-    console.log(response.data);
-
     if (response.data.error) {
-      // 에러 발생시
       throw new UnauthorizedException(401, '깃허브 인증을 실패했습니다.');
     }
 
     const { access_token } = response.data;
-    const getUserUrl = 'https://api.github.com/user';
-    // 깃허브 유저 조회 API 주소
+    const getUserUrl = userConstants.requestUrl.getUserInfoUrl;
 
     const { data } = await axios.get(getUserUrl, {
       headers: {
         Authorization: `token ${access_token}`,
       },
-      // 헤더에는 `token ${access_token} 형식으로 넣어주어야 합니다.`
     });
 
     const { login, avatar_url, name, bio, company } = data;
-    // 깃허브 유저 조회 API에서 받은 데이터들을 골라서 처리해줍니다.
+
+    const userInfo = await this.userInfoRepository.findOneBy({
+      githubId: login,
+    });
+
+    // 회원 정보 없음 -> 회원 여부 필드 추가
+    let isMember = true;
+    if (!userInfo) {
+      isMember = false;
+    }
 
     const githubInfo: IGithubUserTypes = {
       githubId: login,
@@ -53,6 +86,8 @@ export default class UserService {
       name,
       description: bio,
       location: company,
+      githubAccessToken: access_token,
+      isMember,
     };
 
     return githubInfo;
