@@ -16,22 +16,31 @@ export class GitService {
 
   async createRepository() {
     const createRepositoryUrl = gitConstants.requestUrl.createRepository;
+    const body = { name: 'createtest' };
+    console.log(body);
+    console.log(createRepositoryUrl);
 
-    const { data } = await axios.get(createRepositoryUrl, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        // Authorization: `token ${access_token}`,
+    const response: AxiosResponse = await axios.post(
+      createRepositoryUrl,
+      body,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `token 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`,
+        },
       },
-    });
+    );
 
-    const options: Partial<SimpleGitOptions> = {
-      baseDir: process.cwd(),
-      binary: 'git',
-      maxConcurrentProcesses: 6,
-      trimmed: false,
-    };
-    const git: SimpleGit = simpleGit(options);
-    console.log(git);
+    console.log(response);
+
+    // const options: Partial<SimpleGitOptions> = {
+    //   baseDir: process.cwd(),
+    //   binary: 'git',
+    //   maxConcurrentProcesses: 6,
+    //   trimmed: false,
+    // };
+    // const git: SimpleGit = simpleGit(options);
+    // console.log(git);
 
     return;
   }
