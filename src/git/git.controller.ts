@@ -1,4 +1,5 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateRepositoryDto } from './dtos/create-repository.dto';
 import { GitService } from './git.service';
 
 @Controller('git')
@@ -11,7 +12,7 @@ export class GitController {
   }
 
   @Post('temp')
-  createRepository() {
-    return this.gitService.createRepository();
+  createRepository(@Body() createRepositoryDto: CreateRepositoryDto) {
+    return this.gitService.createRepository(createRepositoryDto);
   }
 }
