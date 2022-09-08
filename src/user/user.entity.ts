@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 @Entity({ name: 'userInfo' })
-class UserInfoEntity extends CoreEntity {
+class UserInfo extends CoreEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -43,4 +43,4 @@ class UserInfoEntity extends CoreEntity {
   email: string;
 }
 
-export default UserInfoEntity;
+export default UserInfo;

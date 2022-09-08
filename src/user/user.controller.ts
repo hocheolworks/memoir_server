@@ -13,8 +13,8 @@ export class UserController {
     description: '깃허브 로그인',
   })
   @Post('/login')
-  async getGithubInfo(@Body() githubCodeDto: GithubCodeDto) {
-    const user = await this.userService.getGithubInfo(githubCodeDto);
+  async githubLogin(@Body() githubCodeDto: GithubCodeDto) {
+    const user = await this.userService.githubLogin(githubCodeDto);
 
     return user;
   }

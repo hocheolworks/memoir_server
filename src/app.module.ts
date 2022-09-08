@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GitModule } from './git/git.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import UserInfoEntity from './user/user.entity';
+import UserInfo from './user/user.entity';
 
 /**
  * ENV 설정
@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserInfoEntity],
+      entities: [UserInfo],
       synchronize: true,
       autoLoadEntities: true,
     }),

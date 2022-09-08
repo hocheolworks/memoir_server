@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { IGithubUserTypes } from './user.interface';
-import { GithubCodeDto } from './dtos/user.dto';
 import { Repository } from 'typeorm';
-import UserInfoEntity from './user.entity';
+import UserInfo from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import userConstants from './user.constants';
+import { GithubSignUpDto } from './dtos/github-sign-up.dto';
+import { GithubCodeDto } from './dtos/user.dto';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -13,8 +14,8 @@ export type User = any;
 @Injectable()
 export default class UserService {
   constructor(
-    @InjectRepository(UserInfoEntity)
-    private readonly userInfoRepository: Repository<UserInfoEntity>,
+    @InjectRepository(UserInfo)
+    private readonly userInfoRepository: Repository<UserInfo>,
   ) {}
 
   private readonly users = [
@@ -35,9 +36,9 @@ export default class UserService {
   }
 
   /**
-   * 로그인 및 회원가입
+   * 깃허브 로그인
    */
-  async getGithubInfo(githubCodeDto: GithubCodeDto): Promise<IGithubUserTypes> {
+  async githubLogin(githubCodeDto: GithubCodeDto): Promise<IGithubUserTypes> {
     const { code } = githubCodeDto;
     const CLIENT_ID = process.env.CLIENT_ID;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -91,5 +92,9 @@ export default class UserService {
     };
 
     return githubInfo;
+  }
+
+  async githubSignUp(githubSignUpDto: GithubSignUpDto): Promise<any> {
+    return githubSignUpDto;
   }
 }
