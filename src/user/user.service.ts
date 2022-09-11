@@ -22,23 +22,6 @@ export default class UserService {
     private readonly userInfoRepository: Repository<UserInfo>,
   ) {}
 
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
-  }
-
   /**
    * 깃허브 로그인
    */
@@ -101,23 +84,25 @@ export default class UserService {
   async githubSignUp(githubSignUpDto: GithubSignUpDto): Promise<any> {
     const { githubId, email } = githubSignUpDto;
 
-    // 가입한 회원인지 확인
-    const userInfo = await this.userInfoRepository.findOneBy({ githubId });
-    if (userInfo) {
-      throw new BadRequestException(
-        userConstants.errorMessages.userAlreadyExist,
-      );
-    }
+    // 가입한 회원여부 및 이메일 중복 체크
+    const userInfo = await this.userInfoRepository.findOne({
+      where: [{ githubId }, { email }],
+    });
 
-    // 이메일 중복 체크
-    const emailInfo = await this.userInfoRepository.findOneBy({ email });
-    if (emailInfo) {
-      throw new BadRequestException(
-        userConstants.errorMessages.emailAlreadyExist,
-      );
+    if (userInfo) {
+      if (userInfo.githubId === 'githubId') {
+        throw new BadRequestException(
+          userConstants.errorMessages.userAlreadyExist,
+        );
+      } else {
+        throw new BadRequestException(
+          userConstants.errorMessages.emailAlreadyExist,
+        );
+      }
     }
 
     const signUpResult = await this.userInfoRepository.save(githubSignUpDto);
+    console.log(signUpResult);
 
     return signUpResult;
   }

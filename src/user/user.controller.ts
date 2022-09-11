@@ -4,12 +4,14 @@ import { GithubCodeDto } from './dtos/user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import UserService from './user.service';
 import { GithubSignUpDto } from './dtos/github-sign-up.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(
-    private readonly userService: UserService, // private authService: AuthService,
+    private readonly userService: UserService,
+    private authService: AuthService,
   ) {}
 
   @ApiOperation({
@@ -19,6 +21,7 @@ export class UserController {
   @Post()
   async githubSignUp(@Body() githubSignUpDto: GithubSignUpDto) {
     const result = await this.userService.githubSignUp(githubSignUpDto);
+    await this.authService.login(result);
     return result;
   }
 
@@ -26,10 +29,10 @@ export class UserController {
     summary: '깃허브 로그인',
     description: '깃허브 로그인',
   })
-  // @UseGuards(JwtAuthGuard)
   @Post('/login')
   async githubSignIn(@Body() githubCodeDto: GithubCodeDto) {
-    const result = await this.userService.githubSignIn(githubCodeDto);
-    return result;
+    const githubResult = await this.userService.githubSignIn(githubCodeDto);
+    const loginResult = await this.authService.login(githubResult);
+    return loginResult;
   }
 }

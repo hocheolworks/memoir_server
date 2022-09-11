@@ -6,4 +6,5 @@ export interface IGithubUserTypes {
   location: string;
   githubAccessToken: string;
   isMember: boolean;
+  memoirAccessToken?: string;
 }
