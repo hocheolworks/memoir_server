@@ -39,7 +39,7 @@ class UserInfo extends CoreEntity {
   @IsNotEmpty()
   @IsEmail()
   @Length(1, 200)
-  @Column({ nullable: false, length: 200, unique: true })
+  @Column({ nullable: false, length: 200 })
   email: string;
 }
 

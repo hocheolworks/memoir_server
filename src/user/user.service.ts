@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { IGithubUserTypes } from './user.interface';
 import { Repository } from 'typeorm';
@@ -38,7 +42,7 @@ export default class UserService {
   /**
    * 깃허브 로그인
    */
-  async githubLogin(githubCodeDto: GithubCodeDto): Promise<IGithubUserTypes> {
+  async githubSignIn(githubCodeDto: GithubCodeDto): Promise<IGithubUserTypes> {
     const { code } = githubCodeDto;
     const CLIENT_ID = process.env.CLIENT_ID;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -95,6 +99,26 @@ export default class UserService {
   }
 
   async githubSignUp(githubSignUpDto: GithubSignUpDto): Promise<any> {
-    return githubSignUpDto;
+    const { githubId, email } = githubSignUpDto;
+
+    // 가입한 회원인지 확인
+    const userInfo = await this.userInfoRepository.findOneBy({ githubId });
+    if (userInfo) {
+      throw new BadRequestException(
+        userConstants.errorMessages.userAlreadyExist,
+      );
+    }
+
+    // 이메일 중복 체크
+    const emailInfo = await this.userInfoRepository.findOneBy({ email });
+    if (emailInfo) {
+      throw new BadRequestException(
+        userConstants.errorMessages.emailAlreadyExist,
+      );
+    }
+
+    const signUpResult = await this.userInfoRepository.save(githubSignUpDto);
+
+    return signUpResult;
   }
 }
