@@ -7,6 +7,7 @@ export class AuthService {
   constructor(private jwtService: JwtService) {}
 
   async login(userInfo: IGithubUserTypes) {
+    console.log(process.env.SECRET_KEY);
     const payload = {
       githubId: userInfo.githubId,
       githubAccessToken: userInfo.githubAccessToken,
