@@ -20,9 +20,9 @@ export class UserController {
   })
   @Post()
   async githubSignUp(@Body() githubSignUpDto: GithubSignUpDto) {
-    const result = await this.userService.githubSignUp(githubSignUpDto);
-    await this.authService.login(result);
-    return result;
+    const signUpResult = await this.userService.githubSignUp(githubSignUpDto);
+    await this.authService.login(signUpResult);
+    return signUpResult;
   }
 
   @ApiOperation({
