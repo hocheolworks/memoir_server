@@ -12,8 +12,8 @@ export class AuthService {
       githubId: userInfo.githubId,
       githubAccessToken: userInfo.githubAccessToken,
     };
-    const result = (userInfo.memoirAccessToken = this.jwtService.sign(payload));
+    userInfo.memoirAccessToken = this.jwtService.sign(payload);
 
-    return result;
+    return userInfo;
   }
 }
