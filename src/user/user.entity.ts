@@ -6,9 +6,6 @@ import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 @Entity({ name: 'userInfo' })
 class UserInfo extends CoreEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @ApiProperty({
     description: '갓허브 id',
     example: 'Bliss96',

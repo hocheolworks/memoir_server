@@ -10,7 +10,7 @@ import UserInfo from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import userConstants from './user.constants';
 import { GithubSignUpDto } from './dtos/github-sign-up.dto';
-import { GithubCodeDto } from './dtos/user.dto';
+import { GithubCodeDto } from './dtos/github-code.dto';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -81,7 +81,9 @@ export default class UserService {
     return githubInfo;
   }
 
-  async githubSignUp(githubSignUpDto: GithubSignUpDto): Promise<any> {
+  async githubSignUp(
+    githubSignUpDto: GithubSignUpDto,
+  ): Promise<GithubSignUpDto> {
     const { githubId, email } = githubSignUpDto;
 
     // 가입한 회원여부 및 이메일 중복 체크
@@ -101,9 +103,15 @@ export default class UserService {
       }
     }
 
-    const signUpResult = await this.userInfoRepository.save(githubSignUpDto);
-    console.log(signUpResult);
+    const signUpResult: GithubSignUpDto = await this.userInfoRepository.save(
+      githubSignUpDto,
+    );
 
     return signUpResult;
+  }
+
+  async getUserInfo(githubId): Promise<UserInfo> {
+    const userInfo = await this.userInfoRepository.findOneBy({ githubId });
+    return userInfo;
   }
 }

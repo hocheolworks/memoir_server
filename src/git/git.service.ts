@@ -32,8 +32,6 @@ export class GitService {
       },
     );
 
-    console.log(response);
-
     return;
   }
 }

@@ -14,11 +14,6 @@ import UserInfo from './user/user.entity';
 let envFilePath = './envs/.envs';
 if (process.env.NODE_ENV === 'production') {
   envFilePath = './envs/.envs';
-  console.log(process.env.NODE_ENV);
-  console.log(envFilePath);
-  console.log(process.env.DB_HOST);
-  console.log(process.env.DB_USERNAME);
-  console.log(process.env);
 }
 @Module({
   imports: [

@@ -1,26 +1,24 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
+import { map, Observable } from 'rxjs';
 
-/**
- * Response formatter
- */
-@Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const response = context.switchToHttp().getResponse();
-    const { statusCode } = response;
-
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      map((data) => ({
-        statusCode,
-        data,
-      })),
+      map((data: any) => {
+        const response = context.switchToHttp().getResponse();
+        const { statusCode } = response;
+        if (statusCode < 400) {
+          return {
+            statusCode,
+            ...instanceToPlain(data),
+          };
+        }
+        return data;
+      }),
     );
   }
 }

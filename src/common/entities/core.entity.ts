@@ -6,16 +6,20 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 export class CoreEntity {
   @ApiProperty({
     description: 'id(pk)',
+    readOnly: true,
   })
+  @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
     description: '생성일시',
+    readOnly: true,
   })
   @CreateDateColumn()
   createdAt: Date;
