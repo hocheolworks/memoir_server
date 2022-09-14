@@ -28,6 +28,10 @@ async function bootstrap() {
     .setTitle('Memoir apis')
     .setDescription('Memoir apis description')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'Token' },
+      'bearer-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(SWAGGER_PATH, app, document);

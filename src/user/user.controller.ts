@@ -7,7 +7,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GithubCodeDto } from './dtos/github-code.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import UserService from './user.service';
@@ -16,6 +21,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthUser } from 'src/common/decorators/auth-user.decorator';
 import { IGithubUserTypes } from './user.interface';
 import GithubSignInDto from './dtos/github-user.dto';
+import UserInfo from './user.entity';
 
 @ApiTags('users')
 @Controller('users')
@@ -65,9 +71,10 @@ export class UserController {
     summary: '유저 정보 조회',
     description: '유저 정보 조회',
   })
+  @ApiBearerAuth('bearer-token')
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getUserInfo(@AuthUser() user: any) {
+  async getUserInfo(@AuthUser() userInfo: UserInfo) {
     return 'hello';
   }
 }
