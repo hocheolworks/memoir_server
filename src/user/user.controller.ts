@@ -7,12 +7,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubCodeDto } from './dtos/github-code.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import UserService from './user.service';
@@ -20,6 +15,7 @@ import { GithubSignUpDto } from './dtos/github-sign-up.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthUser } from 'src/common/decorators/auth-user.decorator';
 import { IGithubUserTypes } from './user.interface';
+import GithubSignInDto from './dtos/github-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -54,7 +50,7 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: '로그인 성공',
-    type: GithubSignUpDto,
+    type: GithubSignInDto,
   })
   @Post('/login')
   async githubSignIn(

@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Entity } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import UserInfo from '../user.entity';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 @Entity({ name: 'userInfo' })
 class GithubSignInDto {
