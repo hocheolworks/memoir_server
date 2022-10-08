@@ -8,6 +8,7 @@ const userConstants = {
     userAlreadyExist: '이미 가입된 회원입니다.',
     emailAlreadyExist: '중복된 이메일입니다.',
     FAIL_TO_SIGN_UP: '회원 가입에 실패했습니다.',
+    FAIL_TO_CREASTE_REPO: '레포지토리 생성에 실패했습니다.',
   },
 };
 

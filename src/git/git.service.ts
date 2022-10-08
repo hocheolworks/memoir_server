@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   simpleGit,
   SimpleGit,
@@ -6,8 +6,9 @@ import {
   SimpleGitOptions,
 } from 'simple-git';
 import gitConstants from './git.constants';
-import axios, { AxiosResponse } from 'axios';
+import axios, { Axios, AxiosResponse } from 'axios';
 import { CreateRepositoryDto } from './dtos/create-repository.dto';
+import userConstants from 'src/user/user.constants';
 
 @Injectable()
 export class GitService {
@@ -23,12 +24,21 @@ export class GitService {
     const githubAccessToken = `token ${createRepositoryDto.githubAccessToken}`;
     console.log(githubAccessToken);
 
-    const response = await axios.post(createRepositoryUrl, body, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: githubAccessToken,
-      },
-    });
+    let response: AxiosResponse;
+
+    try {
+      response = await axios.post(createRepositoryUrl, body, {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: githubAccessToken,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException(
+        userConstants.errorMessages.FAIL_TO_CREASTE_REPO,
+      );
+    }
 
     return response.data;
   }
