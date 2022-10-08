@@ -73,7 +73,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getUserInfo(@AuthUser() userInfo: UserInfo) {
-    console.log(userInfo);
     const gitUserInfo = await this.userService.getUserInfo('bliss');
     return gitUserInfo;
   }

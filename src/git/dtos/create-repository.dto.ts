@@ -8,7 +8,7 @@ export class CreateRepositoryDto {
   })
   @IsString()
   @IsNotEmpty()
-  accessToken: string;
+  githubAccessToken: string;
 
   @ApiProperty({
     description: 'github id',

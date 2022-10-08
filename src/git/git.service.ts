@@ -19,7 +19,7 @@ export class GitService {
     const createRepositoryUrl = gitConstants.requestUrl.createRepository;
     const repositoryName = `memoir-${createRepositoryDto.githubId}`;
     const body = { name: repositoryName };
-    const githubAccessToken = `token ${createRepositoryDto.accessToken}`;
+    const githubAccessToken = `token ${createRepositoryDto.githubAccessToken}`;
 
     const response = await axios.post(createRepositoryUrl, body, {
       headers: {

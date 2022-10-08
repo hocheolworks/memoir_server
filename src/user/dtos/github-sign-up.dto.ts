@@ -14,5 +14,5 @@ export class GithubSignUpDto extends OmitType(UserInfo, [
   })
   @IsString()
   @IsNotEmpty()
-  accessToken: string;
+  githubAccessToken: string;
 }

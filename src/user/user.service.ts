@@ -85,9 +85,7 @@ export default class UserService {
   }
 
   async githubSignUp(githubSignUpDto: GithubSignUpDto) {
-    const { githubId, email, accessToken } = githubSignUpDto;
-    console.log(githubId);
-    console.log(accessToken);
+    const { githubId, email, githubAccessToken } = githubSignUpDto;
 
     // 가입한 회원여부 및 이메일 중복 체크
     const userInfo = await this.userInfoRepository.findOne({
@@ -116,7 +114,7 @@ export default class UserService {
       await queryRunner.manager.save(instance);
       await this.gitServie.createRepository({
         githubId,
-        accessToken,
+        githubAccessToken,
       });
 
       await queryRunner.commitTransaction();
@@ -131,7 +129,7 @@ export default class UserService {
     }
   }
 
-  async getUserInfo(githubId): Promise<UserInfo> {
+  async getUserInfo(githubId: string): Promise<UserInfo> {
     const userInfo = await this.userInfoRepository.findOneBy({ githubId });
     return userInfo;
   }
