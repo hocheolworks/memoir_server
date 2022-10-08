@@ -111,19 +111,21 @@ export default class UserService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const saveResult = await queryRunner.manager.save(githubSignUpDto);
-      console.log(saveResult);
+      const instance = this.userInfoRepository.create(githubSignUpDto);
 
-      const repoCreateResult = await this.gitServie.createRepository({
+      await queryRunner.manager.save(instance);
+      await this.gitServie.createRepository({
         githubId,
         accessToken,
       });
-      console.log(repoCreateResult);
 
       await queryRunner.commitTransaction();
     } catch (err) {
-      console.log(err);
       await queryRunner.rollbackTransaction();
+
+      throw new BadRequestException(
+        userConstants.errorMessages.FAIL_TO_SIGN_UP,
+      );
     } finally {
       await queryRunner.release();
     }
