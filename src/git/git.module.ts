@@ -5,5 +5,6 @@ import { GitController } from './git.controller';
 @Module({
   providers: [GitService],
   controllers: [GitController],
+  exports: [GitService],
 })
 export class GitModule {}

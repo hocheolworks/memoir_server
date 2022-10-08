@@ -42,9 +42,7 @@ export class UserController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  async githubSignUp(
-    @Body() githubSignUpDto: GithubSignUpDto,
-  ): Promise<GithubSignUpDto> {
+  async githubSignUp(@Body() githubSignUpDto: GithubSignUpDto) {
     const signUpResult = await this.userService.githubSignUp(githubSignUpDto);
     return signUpResult;
   }
@@ -75,6 +73,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getUserInfo(@AuthUser() userInfo: UserInfo) {
-    return 'hello';
+    console.log(userInfo);
+    const gitUserInfo = await this.userService.getUserInfo('bliss');
+    return gitUserInfo;
   }
 }

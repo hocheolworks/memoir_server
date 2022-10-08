@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { IGithubUserTypes } from './user.interface';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import UserInfo from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import userConstants from './user.constants';
 import { GithubSignUpDto } from './dtos/github-sign-up.dto';
 import { GithubCodeDto } from './dtos/github-code.dto';
+import { GitService } from 'src/git/git.service';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -20,6 +21,8 @@ export default class UserService {
   constructor(
     @InjectRepository(UserInfo)
     private readonly userInfoRepository: Repository<UserInfo>,
+    private readonly gitServie: GitService,
+    private dataSource: DataSource,
   ) {}
 
   /**
@@ -81,10 +84,10 @@ export default class UserService {
     return githubInfo;
   }
 
-  async githubSignUp(
-    githubSignUpDto: GithubSignUpDto,
-  ): Promise<GithubSignUpDto> {
-    const { githubId, email } = githubSignUpDto;
+  async githubSignUp(githubSignUpDto: GithubSignUpDto) {
+    const { githubId, email, accessToken } = githubSignUpDto;
+    console.log(githubId);
+    console.log(accessToken);
 
     // 가입한 회원여부 및 이메일 중복 체크
     const userInfo = await this.userInfoRepository.findOne({
@@ -103,11 +106,27 @@ export default class UserService {
       }
     }
 
-    const signUpResult: GithubSignUpDto = await this.userInfoRepository.save(
-      githubSignUpDto,
-    );
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    return signUpResult;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const saveResult = await queryRunner.manager.save(githubSignUpDto);
+      console.log(saveResult);
+
+      const repoCreateResult = await this.gitServie.createRepository({
+        githubId,
+        accessToken,
+      });
+      console.log(repoCreateResult);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getUserInfo(githubId): Promise<UserInfo> {

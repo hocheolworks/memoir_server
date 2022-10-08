@@ -51,15 +51,14 @@ class GithubSignInDto {
   @Length(1, 200)
   location: string;
 
-  //   @ApiProperty({
-  //     description: 'email',
-  //     example: 'ajtskawjdcjfdl@naver.com',
-  //     nullable: false,
-  //   })
-  //   @IsNotEmpty()
-  //   @IsEmail()
-  //   @Length(1, 200)
-  //   githubAccessToken: string;
+  @ApiProperty({
+    description: 'email',
+    example: 'ajtskawjdcjfdl@naver.com',
+    nullable: false,
+  })
+  @IsNotEmpty()
+  @Length(1, 200)
+  githubAccessToken: string;
 
   @ApiProperty({
     description: 'isMember',

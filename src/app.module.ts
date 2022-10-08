@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GitModule } from './git/git.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { DataSource } from 'typeorm';
 import UserInfo from './user/user.entity';
 
 /**
@@ -36,4 +37,6 @@ if (process.env.NODE_ENV === 'production') {
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

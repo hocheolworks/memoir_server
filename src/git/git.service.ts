@@ -21,17 +21,13 @@ export class GitService {
     const body = { name: repositoryName };
     const githubAccessToken = `token ${createRepositoryDto.accessToken}`;
 
-    const response: AxiosResponse = await axios.post(
-      createRepositoryUrl,
-      body,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: githubAccessToken,
-        },
+    const response = await axios.post(createRepositoryUrl, body, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: githubAccessToken,
       },
-    );
+    });
 
-    return;
+    return response.data;
   }
 }
