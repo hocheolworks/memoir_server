@@ -47,7 +47,9 @@ export default class UserService {
     });
 
     if (response.data.error) {
-      throw new UnauthorizedException(401, '깃허브 인증을 실패했습니다.');
+      throw new UnauthorizedException(
+        userConstants.errorMessages.FAIL_TO_GITHUB_AUTHORIZE,
+      );
     }
 
     const { access_token } = response.data;
