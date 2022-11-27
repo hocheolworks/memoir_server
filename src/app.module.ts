@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GitModule } from './git/git.module';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
 import { DataSource } from 'typeorm';
 import UserInfo from './user/user.entity';
 
@@ -26,13 +25,16 @@ if (process.env.NODE_ENV === 'production') {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserInfo],
-      synchronize: true,
+      schema: process.env.DB_SCHEMA_NAME,
+      synchronize: process.env.NODE_ENV !== 'prod',
+      logging: process.env.DB_LOGGING === 'true' ? true : false,
       autoLoadEntities: true,
+      ssl: process.env.DB_SSL === 'true' ? true : false,
+      // entities: ['dist/src/**/*.entity{.ts,.js}'],
     }),
-    GitModule,
-    UserModule,
-    AuthModule,
+    // GitModule,
+    // UserModule,
+    // AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
