@@ -1,7 +1,9 @@
 const constants = {
   props: {},
 
-  errorMessages: {},
+  errorMessages: {
+    USER_NOT_FOUND: '존재하지 않는 회원입니다.',
+  },
 };
 
 export default constants;

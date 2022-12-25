@@ -11,7 +11,7 @@ export class User extends CoreEntity {
     example: 'BLISS96',
     required: true,
   })
-  @Column({ type: 'string', nullable: false, unique: true, length: 30 })
+  @Column({ type: 'varchar', nullable: false, unique: true, length: 30 })
   githubId: number;
 
   @ApiProperty({
