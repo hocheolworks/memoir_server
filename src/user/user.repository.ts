@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -20,6 +21,14 @@ export class UserRepository {
   ) {}
 
   async createUser(generateUserDto: GenerateUserDto) {
+    const checkUserConflict = this.userRepository.findOne({
+      where: { githubId: generateUserDto.githubId },
+    });
+
+    if (checkUserConflict) {
+      throw new ConflictException(constants.errorMessages.DUPLICATED_USER);
+    }
+
     const user = await this.userRepository.save(generateUserDto);
 
     if (!user) {

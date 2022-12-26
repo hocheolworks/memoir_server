@@ -3,6 +3,7 @@ const constants = {
 
   errorMessages: {
     FAIL_TO_CREATE_USER: '회원가입에 실패했습니다.',
+    DUPLICATED_USER: '이미 가입된 회원입니다.',
     USER_NOT_FOUND: '존재하지 않는 회원입니다.',
   },
 };

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 //TODO Index 추가
 @Entity({ name: 'User', schema: process.env.DB_SCHEMA_NAME })
