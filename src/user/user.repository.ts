@@ -1,7 +1,13 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import commonConstants from 'src/common/constants';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { GenerateUserDto } from './dtos/generate-user.dto';
+import { UserDto } from './dtos/user.dto';
 import constants from './user.constants';
 import { User } from './user.entity';
 
@@ -10,14 +16,22 @@ export class UserRepository {
   constructor(
     @Inject(commonConstants.repositories.USER_REPOSITORY)
     private userRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
 
   async createUser(generateUserDto: GenerateUserDto) {
-    let user: User;
+    const user = await this.userRepository.save(generateUserDto);
+
+    if (!user) {
+      throw new BadRequestException(
+        constants.errorMessages.FAIL_TO_CREATE_USER,
+      );
+    }
+
     return user;
   }
 
-  async findUserById(id: number): Promise<User> {
+  async findUserById(id: number): Promise<UserDto> {
     const user = this.userRepository.findOne({ where: { id } });
 
     if (!user) {

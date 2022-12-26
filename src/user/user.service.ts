@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ObjectResponse } from 'src/common/dtos/object-response.dto';
 import { GenerateUserDto } from './dtos/generate-user.dto';
 import { UserRepository } from './user.repository';
 
@@ -7,10 +8,14 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async generateUser(generateUserDto: GenerateUserDto) {
-    return this.userRepository.createUser(generateUserDto);
+    const user = await this.userRepository.createUser(generateUserDto);
+
+    return new ObjectResponse(user);
   }
 
   async findUserById(id: number) {
-    return this.userRepository.findUserById(id);
+    const user = await this.userRepository.findUserById(id);
+
+    return new ObjectResponse(user);
   }
 }

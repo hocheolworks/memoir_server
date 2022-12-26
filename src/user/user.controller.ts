@@ -1,21 +1,26 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ObjectResponse } from 'src/common/dtos/object-response.dto';
 import { GenerateUserDto } from './dtos/generate-user.dto';
-import { User } from './user.entity';
+import { UserDto } from './dtos/user.dto';
 import { UserService } from './user.service';
 
-@ApiTags('user')
-@Controller('user')
+@ApiTags('users')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(':id')
-  async findUserById(@Param('id') id: number): Promise<User> {
+  async findUserById(
+    @Param('id') id: number,
+  ): Promise<ObjectResponse<UserDto>> {
     return this.userService.findUserById(id);
   }
 
   @Post()
-  async generateUser(@Body() generateUserDto: GenerateUserDto) {
-    return this.userService.generateUser(generateUserDto);
+  async generateUser(
+    @Body() generateUserDto: GenerateUserDto,
+  ): Promise<ObjectResponse<UserDto>> {
+    return await this.userService.generateUser(generateUserDto);
   }
 }

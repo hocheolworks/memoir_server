@@ -3,7 +3,7 @@ import { IsEmail } from 'class-validator';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Column, Entity, Index } from 'typeorm';
 
-//TODO 로직에 따라 Index 추가
+//TODO Index 추가
 @Entity({ name: 'User', schema: process.env.DB_SCHEMA_NAME })
 export class User extends CoreEntity {
   @ApiProperty({

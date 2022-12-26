@@ -23,6 +23,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
@@ -35,7 +36,7 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   Logger.debug(SWAGGER_PATH);
 

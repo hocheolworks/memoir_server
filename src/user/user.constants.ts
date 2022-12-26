@@ -2,6 +2,7 @@ const constants = {
   props: {},
 
   errorMessages: {
+    FAIL_TO_CREATE_USER: '회원가입에 실패했습니다.',
     USER_NOT_FOUND: '존재하지 않는 회원입니다.',
   },
 };
