@@ -49,7 +49,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: jeongcheollee
           password: ${{ secrets.BLISS_GITHUB_TOKEN }}
       - name: Docker run
         run: |
