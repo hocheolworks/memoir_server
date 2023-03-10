@@ -45,6 +45,11 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
+      - name: User add for docker Login
+        run: |
+          sudo groupadd docker
+          sudo usermod -aG docker $USER
+          newgrp docker
       - name: Login to ghcr
         uses: docker/login-action@v2
         with:
