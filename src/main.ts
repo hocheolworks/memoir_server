@@ -8,6 +8,8 @@ async function bootstrap() {
     logger: WinstonLogger,
   });
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('Memoir_APIS')
     .setDescription('월드클래스 메모아의 API 문서')
@@ -15,7 +17,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT || 3000);
 }
