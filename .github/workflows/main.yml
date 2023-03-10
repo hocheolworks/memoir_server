@@ -47,7 +47,6 @@ jobs:
     steps:
       - name: User add for docker Login
         run: |
-          sudo groupadd docker
           sudo usermod -aG docker $USER
           newgrp docker
       - name: Login to ghcr
