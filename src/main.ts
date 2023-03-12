@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { WinstonLogger } from './common/helpers/winstonLogger';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TransformInterceptor } from './common/interceptors/response-transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -9,6 +11,9 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
+
+  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('Memoir_APIS')

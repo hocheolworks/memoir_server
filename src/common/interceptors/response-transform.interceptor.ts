@@ -1,27 +1,24 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { instanceToPlain } from 'class-transformer';
-import { map, Observable } from 'rxjs';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-/**
- * Global interceptor Api 응답직전 데이터 transform
- */
-export class ResponseTransformInterceptor implements NestInterceptor {
+export interface Response<T> {
+  data: T;
+}
+
+@Injectable()
+export class TransformInterceptor<T>
+  implements NestInterceptor<T, Response<T>>
+{
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<any> | Promise<Observable<any>> {
-    return next.handle().pipe(
-      map((data: any) => {
-        const response = context.switchToHttp().getResponse();
-        const { statusCode } = response;
-        if (statusCode < 400) {
-          return {
-            statusCode,
-            ...instanceToPlain(data),
-          };
-        }
-        return data;
-      }),
-    );
+  ): Observable<Response<T>> {
+    return next.handle().pipe(map((data) => ({ data })));
   }
 }
