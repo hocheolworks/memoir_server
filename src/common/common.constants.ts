@@ -4,7 +4,7 @@ const constants = {
   props: {},
   dataBaseProviders: {
     DATA_SOURCE: 'DATA_SOURCE',
-    ERROR_LOG: 'ERROR_LOG',
+    ERROR_LOG: 'ErrorLog',
   },
 };
 

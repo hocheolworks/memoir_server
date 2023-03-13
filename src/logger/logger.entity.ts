@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'ERROR_LOG', schema: process.env.DB_SCHEMA_NAME })
+@Entity({ name: 'ErrorLog', schema: process.env.DB_SCHEMA_NAME })
 export class ErrorLog extends CoreEntity {
   @ApiProperty({
     example: 'POST',
