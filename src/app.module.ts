@@ -4,9 +4,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OAuthModule } from './oauth/oauth.module';
 import { UserModule } from './user/user.module';
-import { LoggerService } from './logger/logger.service';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { DatabaseModule } from './database/database.module';
+import { LoggerModule } from './logger/logger.module';
 
 let envFilePath = '.envs/.env.development';
 if (process.env.NODE_ENV === 'production') envFilePath = 'envs/.env.production';
@@ -20,9 +20,10 @@ if (process.env.NODE_ENV === 'production') envFilePath = 'envs/.env.production';
     OAuthModule,
     UserModule,
     DatabaseModule,
+    LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, LoggerService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

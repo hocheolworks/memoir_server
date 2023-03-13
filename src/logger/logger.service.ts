@@ -1,14 +1,22 @@
-import { LoggerService as LS } from '@nestjs/common';
+import { Inject, Injectable, LoggerService as LS } from '@nestjs/common';
 import * as winston from 'winston';
 import moment from 'moment';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import constants from 'src/common/common.constants';
+import { Repository } from 'typeorm';
+import { ErrorLog } from './logger.entity';
+import { GenerateErrorLogDto } from './dtos/generate-error-log.dto';
 
 const { errors, combine, timestamp, printf } = winston.format;
 
+@Injectable()
 export class LoggerService implements LS {
   private logger: winston.Logger;
 
-  constructor(service: string) {
+  constructor(
+    @Inject(constants.dataBaseProviders.ERROR_LOG)
+    private readonly errorLogRepository: Repository<ErrorLog>,
+  ) {
     this.logger = winston.createLogger({
       transports: [
         new winston.transports.File({
@@ -28,7 +36,7 @@ export class LoggerService implements LS {
           level: 'debug',
           format: combine(
             timestamp({ format: 'isoDateTime' }),
-            nestWinstonModuleUtilities.format.nestLike(service, {
+            nestWinstonModuleUtilities.format.nestLike('memoir', {
               prettyPrint: true,
             }),
           ),
@@ -68,5 +76,13 @@ export class LoggerService implements LS {
   }
   verbose(message: string) {
     this.logger.verbose(message);
+  }
+
+  async createErrorLog(generateErrorLogDto: GenerateErrorLogDto) {
+    const insertResult = await this.errorLogRepository.insert(
+      generateErrorLogDto,
+    );
+
+    return insertResult;
   }
 }
