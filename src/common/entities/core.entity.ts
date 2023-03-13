@@ -5,7 +5,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CoreHardEntity {
+export class CoreEntity {
   @ApiProperty({
     description: '데이터 ID(PK)',
     readOnly: true,

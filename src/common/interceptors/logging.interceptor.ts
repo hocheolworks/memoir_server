@@ -7,14 +7,19 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+export interface RequestWithTime extends Request {
+  startTime: number;
+}
+
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('Before...');
-
     const now = Date.now();
-    return next
-      .handle()
-      .pipe(tap(() => console.log(`After... ${Date.now() - now}ms`)));
+    const ctx = context.switchToHttp();
+    const request: RequestWithTime = ctx.getRequest();
+
+    request.startTime = now;
+
+    return next.handle().pipe(tap(() => {}));
   }
 }
