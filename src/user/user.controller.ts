@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -9,7 +17,7 @@ import { UserService } from './user.service';
 import { GenerateGithubAccessTokenDto } from './dtos/generate-github-access-token.dto';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';
 import { GenerateUserDto } from './dtos/generate-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import constants from 'src/common/common.constants';
 import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GithubUserGuard } from 'src/common/guards/github-user.guard';
@@ -36,7 +44,7 @@ export class UserController {
   }
 
   @ApiOperation({
-    summary: '깃허브 회원가입',
+    summary: '깃허브 회원가입 및 메모아 레포지토리 생성',
   })
   @ApiResponse({
     status: 201,
@@ -45,8 +53,14 @@ export class UserController {
   @ApiBearerAuth(constants.props.BearerToken)
   @UseGuards(GithubUserGuard)
   @Post('signup')
-  async generateUser(@Body() generateUserDto: GenerateUserDto) {
-    return await this.userService.generateUser(generateUserDto);
+  async generateUser(
+    @Body() generateUserDto: GenerateUserDto,
+    @Req() request: Request,
+  ) {
+    return await this.userService.generateUser(
+      generateUserDto,
+      request.headers.authorization,
+    );
   }
 
   @ApiOperation({
