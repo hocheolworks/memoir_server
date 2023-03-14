@@ -23,6 +23,7 @@ import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GithubUserGuard } from 'src/common/guards/github-user.guard';
 import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
+import { User } from './user.entity';
 
 @ApiTags('User')
 @Controller('users')
@@ -48,7 +49,7 @@ export class UserController {
   })
   @ApiResponse({
     status: 201,
-    type: FindGithubUserResponseDto,
+    type: User,
   })
   @ApiBearerAuth(constants.props.BearerToken)
   @UseGuards(GithubUserGuard)
