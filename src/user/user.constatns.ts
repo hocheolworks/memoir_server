@@ -6,10 +6,12 @@ const constants = {
     GET_REPOSITORY_AUTHORITY_FAILED:
       '메모아를 사용에 필요한 깃허브 권한을 확보하지 못했습니다.',
     USER_NOT_FOUND: '존재하지 않는 회원입니다.',
+    CREATE_MEMOIR_REPOSITORY_FAILED: '메모아 레포지토리 생성에 실패했습니다.',
   },
   props: {
     REPO: 'repo',
     UNIQUE_USER_EMAIL: 'uniqueUserEmail',
+    REPOSITORY_DESCRIPTION: `Memoir's Repository, It's the place where my memoirs are stored.`,
   },
 };
 

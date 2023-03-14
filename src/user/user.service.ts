@@ -97,7 +97,32 @@ export class UserService {
     return userInfo;
   }
 
-  async generateUser(generateUserDto: GenerateUserDto) {
+  async generateUser(generateUserDto: GenerateUserDto, accessToken: string) {
+    let generateMomoirRepositoryResult: AxiosResponse;
+
+    const headers = {
+      Accept: 'application/vnd.github+json',
+      Authorization: accessToken,
+    };
+
+    const body = {
+      name: `memoir-${generateUserDto.githubUserId}`,
+      description: `${constants.props.REPOSITORY_DESCRIPTION}`,
+      private: false,
+    };
+
+    try {
+      generateMomoirRepositoryResult = await firstValueFrom(
+        this.httpService.post(`https://api.github.com/user/repos`, body, {
+          headers,
+        }),
+      );
+    } catch (e) {
+      throw new BadRequestException(
+        constants.errorMessages.CREATE_MEMOIR_REPOSITORY_FAILED,
+      );
+    }
+
     return await this.userRepository.createUser(generateUserDto);
   }
 
