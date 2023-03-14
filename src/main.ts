@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import constants from './common/common.constants';
 import { WinstonLogger } from './common/helpers/winstonLogger';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/response-transform.interceptor';
@@ -19,6 +20,11 @@ async function bootstrap() {
     .setTitle('Memoir_APIS')
     .setDescription('월드클래스 메모아의 API 문서')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'jwt' },
+      constants.props.BearerToken,
+    )
+
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

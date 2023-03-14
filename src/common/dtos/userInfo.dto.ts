@@ -1,12 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/user/user.entity';
 
-export class FindGithubUserResponseDto {
-  @ApiProperty({
-    example: 'JeongCheolLee',
-    description: '깃허브 id',
-  })
-  githubUserName: string;
-
+export class UserInfoDto extends User {
   @ApiProperty({
     example: 'https://avatars.githubusercontent.com/u/85550653?v=4',
     description: '프로필 이미지',
@@ -18,12 +13,4 @@ export class FindGithubUserResponseDto {
     description: '프로필 설명',
   })
   description: string;
-
-  @ApiProperty({
-    example: true,
-    description: '메모아 회원 여부',
-  })
-  isMemoirUser: boolean;
-
-  accessToken?: string;
 }

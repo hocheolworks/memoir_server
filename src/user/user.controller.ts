@@ -1,35 +1,25 @@
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  Res,
-} from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { AxiosResponse } from 'axios';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
-import { HttpService } from '@nestjs/axios';
 import { GenerateGithubAccessTokenDto } from './dtos/generate-github-access-token.dto';
-import constants from './user.constatns';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';
+import { GenerateUserDto } from './dtos/generate-user.dto';
+import { Response } from 'express';
+import constants from 'src/common/common.constants';
+import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
+import { GithubUserGuard } from 'src/common/guards/github-user.guard';
+import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
+import { GetUserInfo } from 'src/common/decorators/user.decorator';
 
 @ApiTags('User')
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly httpService: HttpService,
-  ) {}
-
-  @Post('')
-  async genearetAccount(@Body() generateUserDto: any) {
-    return true;
-    // const account = await this.userService.generateAccount(generateAccountDto);
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Get('')
   async test(@Res() res) {
@@ -46,75 +36,62 @@ export class UserController {
   }
 
   @ApiOperation({
+    summary: '깃허브 회원가입',
+  })
+  @ApiResponse({
+    status: 201,
+    type: FindGithubUserResponseDto,
+  })
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(GithubUserGuard)
+  @Post('signup')
+  async generateUser(@Body() generateUserDto: GenerateUserDto) {
+    return await this.userService.generateUser(generateUserDto);
+  }
+
+  @ApiOperation({
     summary: '깃허브 로그인',
   })
   @ApiResponse({
     status: 201,
     type: FindGithubUserResponseDto,
   })
-  @Post('login')
+  @Post('signin')
   async generateAccessToken(
-    @Body() generateGithubAccessToken: GenerateGithubAccessTokenDto,
+    @Body() generateGithubAccessTokenDto: GenerateGithubAccessTokenDto,
+    @Res() response: Response,
   ) {
-    const githubClientId = process.env.GITHUB_CLIENT_ID;
-    const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+    const generateResult = await this.userService.generateAccessToken(
+      generateGithubAccessTokenDto,
+    );
 
-    let headers: Record<string, string> = {
-      accept: 'application/json',
-    };
+    response.setHeader(
+      'Authorization',
+      `${constants.props.TokenType} ${generateResult.accessToken}`,
+    );
 
-    const data = {
-      code: generateGithubAccessToken.code,
-      client_id: githubClientId,
-      client_secret: githubClientSecret,
-    };
+    delete generateResult.accessToken;
 
-    let generateAccessTokenResult: AxiosResponse;
-    try {
-      generateAccessTokenResult = await firstValueFrom(
-        this.httpService.post(
-          `https://github.com/login/oauth/access_token`,
-          data,
-          { headers },
-        ),
-      );
-    } catch (e) {
-      throw new BadRequestException(
-        constants.errorMessages.GITHUB_LOGIN_FAILED,
-      );
-    }
+    response.json(generateResult);
+  }
 
-    if (generateAccessTokenResult.data.scope !== constants.props.REPO) {
-      throw new BadRequestException(
-        constants.errorMessages.GET_REPOSITORY_AUTHORITY_FAILED,
-      );
-    }
+  @ApiOperation({
+    summary: '토큰으로 유저 정보를 검색합니다.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: UserInfoDto,
+  })
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(MemoirUserGuard)
+  @Get('/me')
+  async findUserInfoByToken(@GetUserInfo() userInfo: UserInfoDto) {
+    const memoirGithubUserInfo = await this.userService.findUserByGithubUserId(
+      userInfo.githubUserId,
+    );
+    memoirGithubUserInfo['profileImage'] = userInfo.profileImage;
+    memoirGithubUserInfo['description'] = userInfo.description;
 
-    const accessToken = generateAccessTokenResult.data.access_token;
-    const tokenType = generateAccessTokenResult.data.token_type;
-
-    headers = {
-      accept: 'application/json',
-      Authorization: `${tokenType} ${accessToken}`,
-    };
-
-    let getUserInfoResult: AxiosResponse;
-
-    try {
-      getUserInfoResult = await firstValueFrom(
-        this.httpService.get(`https://api.github.com/user`, { headers }),
-      );
-    } catch (e) {
-      throw new BadRequestException(
-        constants.errorMessages.GET_GITHUB_USER_INFO_FAILED,
-      );
-    }
-
-    const userInfo = new FindGithubUserResponseDto();
-    userInfo.githubUserName = getUserInfoResult.data.login;
-    userInfo.description = getUserInfoResult.data.bio;
-    userInfo.profileImage = getUserInfoResult.data.avatar_url;
-
-    return userInfo;
+    return memoirGithubUserInfo;
   }
 }

@@ -2,6 +2,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -34,4 +35,15 @@ export class CoreEntity {
     comment: '수정일시',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: '수정일시',
+    readOnly: true,
+  })
+  @DeleteDateColumn({
+    type: 'timestamptz',
+    name: 'deletedAt',
+    comment: '수정일시',
+  })
+  deletedAt: Date;
 }
