@@ -23,8 +23,8 @@ export class UserService {
   async generateAccessToken(
     generateAccessTokenDto: GenerateGithubAccessTokenDto,
   ): Promise<FindGithubUserResponseDto> {
-    const githubClientId = process.env.GITHUB_CLIENT_ID;
-    const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+    const githubClientId = process.env.GITAPI_CLIENT_ID;
+    const githubClientSecret = process.env.GITAPI_CLIENT_SECRET;
 
     let headers: Record<string, string> = {
       accept: 'application/json',
