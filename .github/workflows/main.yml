@@ -39,6 +39,17 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:latest
+          secrets: |
+            "DB_HOST=${{ secrets.DB_HOST }}"
+            "DB_PORT=${{ secrets.DB_PORT }}"
+            "DB_USERNAME=${{ secrets.DB_USERNAME }}"
+            "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            "DB_NAME=${{ secrets.DB_NAME }}"
+            "DB_LOGGING=${{ secrets.DB_LOGGING }}"
+            "DB_SCHEMA_NAME=${{ secrets.DB_SCHEMA_NAME }}"
+            "DB_SSL=${{ secrets.DB_SSL }}"
+            "GITAPI_CLIENT_SECRET=${{ secrets.GITAPI_CLIENT_SECRET }}"
+            "GITAPI_CLIENT_ID=${{ secrets.GITAPI_CLIENT_ID }}"
 
   deploy:
     needs: build
