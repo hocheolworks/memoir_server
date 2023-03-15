@@ -14,6 +14,21 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Create .env
+        run: |
+          mkdir .envs
+          echo DB_HOST=memoir-prd.c0bcvoonmtqz.ap-northeast-2.rds.amazonaws.com >> .envs/.env.production
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .envs/.env.production
+          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .envs/.env.production
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .envs/.env.production
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .envs/.env.production
+          echo DB_LOGGING=${{ secrets.DB_LOGGING }} >> .envs/.env.production
+          echo DB_SCHEMA_NAME=${{ secrets.DB_SCHEMA_NAME }} >> .envs/.env.production
+          echo DB_SSL=${{ secrets.DB_SSL }} >> .envs/.env.production
+          echo GITAPI_CLIENT_SECRET=${{ secrets.GITAPI_CLIENT_SECRET }} >> .envs/.env.production
+          echo GITAPI_CLIENT_ID=${{ secrets.GITAPI_CLIENT_ID }} >> .envs/.env.production
+          cat .envs/.env.production
+
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -57,17 +72,5 @@ jobs:
           password: ${{ secrets.BLISS_GITHUB_TOKEN }}
       - name: Docker run
         run: |
-          mkdir .envs
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .envs/.env.production
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .envs/.env.production
-          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .envs/.env.production
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .envs/.env.production
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .envs/.env.production
-          echo DB_LOGGING=${{ secrets.DB_LOGGING }} >> .envs/.env.production
-          echo DB_SCHEMA_NAME=${{ secrets.DB_SCHEMA_NAME }} >> .envs/.env.production
-          echo DB_SSL=${{ secrets.DB_SSL }} >> .envs/.env.production
-          echo GITAPI_CLIENT_SECRET=${{ secrets.GITAPI_CLIENT_SECRET }} >> .envs/.env.production
-          echo GITAPI_CLIENT_ID=${{ secrets.GITAPI_CLIENT_ID }} >> .envs/.env.production
-          cat .envs/.env.production
           docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 3000:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest --env-file=.envs/.env.production
+          docker run -d -p 3000:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest
