@@ -45,8 +45,6 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
-      - name: Make envfile dir
-        run: mkdir ./.envs
       - name: rm legacy envfile
         run: rm -rf ./.envs/.env.production
       - name: Make envfile
