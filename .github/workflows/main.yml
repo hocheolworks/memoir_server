@@ -28,7 +28,7 @@ jobs:
           envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
           envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
           file_name: .env.production
-          directory: ./envs
+          directory: ./.envs
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Set up docker buildx
