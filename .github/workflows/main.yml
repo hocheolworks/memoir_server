@@ -54,7 +54,7 @@ jobs:
           envkey_DB_PORT: ${{ secrets.DB_PORT }}
           envkey_DB_USERNAME: ${{ secrets.DB_USERNAME }}
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          envkey_DB_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
           envkey_DB_LOGGING: ${{ secrets.DB_LOGGING }}
           envkey_DB_SCHEMA_NAME: ''
           envkey_DB_SSL: ''
