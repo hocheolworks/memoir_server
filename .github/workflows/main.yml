@@ -14,9 +14,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Make envfile dir
+        run: mkdir ./.envs
       - name: Make envfile
-        run: |
-          mkdir ./.envs
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_DB_HOST: ${{ secrets.DB_HOST }}
