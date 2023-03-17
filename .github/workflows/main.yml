@@ -13,26 +13,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    steps:
-      - name: Make envfile dir
-        run: mkdir ./.envs
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_DB_HOST: ${{ secrets.DB_HOST }}
-          envkey_DB_PORT: ${{ secrets.DB_PORT }}
-          envkey_DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          envkey_DB_NAME: ${{ secrets.NAME }}
-          envkey_DB_LOGGING: ${{ secrets.DB_LOGGING }}
-          envkey_DB_SCHEMA_NAME: ${{ secrets.DB_SCHEMA_NAME }}
-          envkey_DB_SSL: ${{ secrets.DB_SSL }}
-          envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
-          envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
-          file_name: .env.production
-          directory: ./.envs
-      - name: ENV test
-        run: cat .envs/.env.production
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -64,6 +44,27 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
+      - name: Make envfile dir
+        run: mkdir ./.envs
+      - name: rm legacy envfile
+        run: rm -rf ./.envs/.env.production
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_PORT: ${{ secrets.DB_PORT }}
+          envkey_DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_NAME: ${{ secrets.NAME }}
+          envkey_DB_LOGGING: ${{ secrets.DB_LOGGING }}
+          envkey_DB_SCHEMA_NAME: ${{ secrets.DB_SCHEMA_NAME }}
+          envkey_DB_SSL: ${{ secrets.DB_SSL }}
+          envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
+          envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
+          file_name: .env.production
+          directory: ./.envs
+      - name: ENV test
+        run: cat .envs/.env.production
       - name: User add for docker Login
         run: |
           sudo usermod -aG docker $USER
