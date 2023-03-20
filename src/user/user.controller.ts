@@ -71,10 +71,12 @@ export class UserController {
   @ApiOperation({
     summary: '깃허브 로그인',
   })
-  @ApiResponse({
-    status: 201,
-    type: FindGithubUserResponseDto,
-  })
+  @SuccessResponse(HttpStatus.CREATED, [
+    {
+      model: FindGithubUserResponseDto,
+      exampleTitle: '요청 성공 응답',
+    },
+  ])
   @Post('signin')
   async generateAccessToken(
     @Body() generateGithubAccessTokenDto: GenerateGithubAccessTokenDto,
@@ -100,10 +102,12 @@ export class UserController {
   @ApiOperation({
     summary: '토큰으로 유저 정보를 검색합니다.',
   })
-  @ApiResponse({
-    status: 200,
-    type: UserInfoDto,
-  })
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: UserInfoDto,
+      exampleTitle: '요청 성공 응답',
+    },
+  ])
   @ApiBearerAuth(constants.props.BearerToken)
   @UseGuards(MemoirUserGuard)
   @Get('/me')
