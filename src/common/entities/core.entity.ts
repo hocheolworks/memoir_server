@@ -10,6 +10,7 @@ export class CoreEntity {
   @ApiProperty({
     description: '데이터 ID(PK)',
     readOnly: true,
+    example: 1,
   })
   @PrimaryGeneratedColumn({ comment: '데이터 ID(PK)' })
   id: number;
@@ -17,6 +18,7 @@ export class CoreEntity {
   @ApiProperty({
     description: '생성일시',
     readOnly: true,
+    example: new Date(),
   })
   @CreateDateColumn({
     type: 'timestamptz',
@@ -28,6 +30,7 @@ export class CoreEntity {
   @ApiProperty({
     description: '수정일시',
     readOnly: true,
+    example: new Date(),
   })
   @UpdateDateColumn({
     type: 'timestamptz',
@@ -39,6 +42,7 @@ export class CoreEntity {
   @ApiProperty({
     description: '수정일시',
     readOnly: true,
+    example: new Date(),
   })
   @DeleteDateColumn({
     type: 'timestamptz',

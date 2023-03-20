@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -23,7 +24,8 @@ import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GithubUserGuard } from 'src/common/guards/github-user.guard';
 import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
-import { User } from './user.entity';
+import { SuccessResponse } from 'src/common/decorators/success-response-schema.dto';
+import { UserDto } from './dtos/user.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -47,10 +49,12 @@ export class UserController {
   @ApiOperation({
     summary: '깃허브 회원가입 및 메모아 레포지토리 생성',
   })
-  @ApiResponse({
-    status: 201,
-    type: User,
-  })
+  @SuccessResponse(HttpStatus.CREATED, [
+    {
+      model: UserDto,
+      exampleTitle: '요청 성공 응답',
+    },
+  ])
   @ApiBearerAuth(constants.props.BearerToken)
   @UseGuards(GithubUserGuard)
   @Post('signup')

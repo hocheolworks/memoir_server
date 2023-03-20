@@ -4,7 +4,7 @@ import moment from 'moment';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import constants from 'src/common/common.constants';
 import { Repository } from 'typeorm';
-import { ErrorLog } from './logger.entity';
+import { ErrorLog } from './entities/logger.entity';
 import { GenerateErrorLogDto } from './dtos/generate-error-log.dto';
 
 const { errors, combine, timestamp, printf } = winston.format;

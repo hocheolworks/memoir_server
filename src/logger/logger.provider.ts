@@ -1,6 +1,6 @@
 import constants from 'src/common/common.constants';
 import { DataSource } from 'typeorm';
-import { ErrorLog } from './logger.entity';
+import { ErrorLog } from './entities/logger.entity';
 
 export const loggerProviders = [
   {
