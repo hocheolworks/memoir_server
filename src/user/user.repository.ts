@@ -12,8 +12,8 @@ export class UserRepository {
   ) {}
 
   async createUser(generateUserDto: GenerateUserDto) {
-    const checkDuplicte = await this.findUserByGithubUserId(
-      generateUserDto.githubUserId,
+    const checkDuplicte = await this.findUserByGithubUserName(
+      generateUserDto.githubUserName,
     );
 
     if (checkDuplicte) {
@@ -26,9 +26,9 @@ export class UserRepository {
     return user;
   }
 
-  async findUserByGithubUserId(githubUserId: string): Promise<User> {
+  async findUserByGithubUserName(githubUserName: string): Promise<User> {
     return this.userRepository.findOne({
-      where: { githubUserId: githubUserId },
+      where: { githubUserName: githubUserName },
     });
   }
 

@@ -11,7 +11,6 @@ import constants from './user.constatns';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';
 import { UserRepository } from './user.repository';
 import { GenerateUserDto } from './dtos/generate-user.dto';
-import { userInfo } from 'os';
 
 @Injectable()
 export class UserService {
@@ -86,7 +85,7 @@ export class UserService {
     userInfo.isMemoirUser = false;
     userInfo.accessToken = accessToken;
 
-    const memoirUser = await this.userRepository.findUserByGithubUserId(
+    const memoirUser = await this.userRepository.findUserByGithubUserName(
       userInfo.githubUserName,
     );
 
@@ -106,7 +105,7 @@ export class UserService {
     };
 
     const body = {
-      name: `memoir-${generateUserDto.githubUserId}`,
+      name: `memoir-${generateUserDto.githubUserName}`,
       description: `${constants.props.REPOSITORY_DESCRIPTION}`,
       private: false,
     };
@@ -126,9 +125,9 @@ export class UserService {
     return await this.userRepository.createUser(generateUserDto);
   }
 
-  async findUserByGithubUserId(githubUserId: string) {
-    const memoirUser = await this.userRepository.findUserByGithubUserId(
-      githubUserId,
+  async findUserByGithubUserName(githubUserName: string) {
+    const memoirUser = await this.userRepository.findUserByGithubUserName(
+      githubUserName,
     );
 
     if (!memoirUser) {

@@ -87,7 +87,10 @@ export class UserController {
 
     delete generateResult.accessToken;
 
-    response.json(generateResult);
+    response.json({
+      statusCode: 201,
+      data: generateResult,
+    });
   }
 
   @ApiOperation({
@@ -101,9 +104,8 @@ export class UserController {
   @UseGuards(MemoirUserGuard)
   @Get('/me')
   async findUserInfoByToken(@GetUserInfo() userInfo: UserInfoDto) {
-    const memoirGithubUserInfo = await this.userService.findUserByGithubUserId(
-      userInfo.githubUserId,
-    );
+    const memoirGithubUserInfo =
+      await this.userService.findUserByGithubUserName(userInfo.githubUserName);
     memoirGithubUserInfo['profileImage'] = userInfo.profileImage;
     memoirGithubUserInfo['description'] = userInfo.description;
 

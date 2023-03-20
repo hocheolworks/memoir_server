@@ -19,7 +19,7 @@ export class User extends CoreEntity {
     length: 50,
     comment: '깃허브 유저 ID',
   })
-  githubUserId: string;
+  githubUserName: string;
 
   @ApiProperty({
     example: '개발새발',
