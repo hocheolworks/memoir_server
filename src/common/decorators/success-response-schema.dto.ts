@@ -29,6 +29,8 @@ interface SuccessResponseOption {
    * pageDto<generic> 인경우?
    */
   generic?: Type<any>;
+
+  isArrayResponse?: boolean;
 }
 /**
  * @param StatusCode 응답 코드입니다. HttpStatus enum 값을 사용하시면됩니다.
@@ -63,6 +65,10 @@ export const SuccessResponse = (
         );
       } else {
         commonResponseInstance.data = dtoData;
+      }
+
+      if (response.isArrayResponse) {
+        commonResponseInstance.data = [dtoData];
       }
 
       commonResponseInstance.statusCode = StatusCode;
