@@ -44,4 +44,6 @@ export class User extends CoreEntity {
     comment: '이메일',
   })
   email: string;
+
+  accesstoken?: string;
 }

@@ -15,6 +15,7 @@ const constants = {
     DATA_SOURCE: 'DATA_SOURCE',
     ERROR_LOG: 'ErrorLog',
     USER: 'User',
+    POST: 'Post',
   },
 };
 

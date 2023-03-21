@@ -24,7 +24,6 @@ async function bootstrap() {
       { type: 'http', scheme: 'bearer', bearerFormat: 'jwt' },
       constants.props.BearerToken,
     )
-
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
