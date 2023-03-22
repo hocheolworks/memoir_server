@@ -106,7 +106,6 @@ export class PostService {
     post['postBody'] = encodedContent;
 
     delete post.user;
-    delete post.sha;
 
     return post;
   }
@@ -150,16 +149,20 @@ export class PostService {
         ),
       );
     } catch (e) {
+      console.log(e);
       throw new BadRequestException(
         constants.errorMessages.FAIL_TO_UPDATE_TO_GITHUB,
       );
     }
 
+    console.log(modifyPostResult.data.content);
     const postUrl = modifyPostResult.data.content.html_url;
     sha = modifyPostResult.data.content.sha;
 
     modifyPostDto.postUrl = postUrl;
     modifyPostDto.sha = sha;
+
+    console.log(modifyPostDto);
 
     return await this.postRepository.updatePostById(id, { ...modifyPostDto });
   }

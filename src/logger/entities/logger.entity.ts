@@ -51,7 +51,7 @@ export class ErrorLog extends CoreEntity {
     example: '172.10.2.31',
     description: '요청 ip',
   })
-  @Column({ nullable: true, type: 'varchar', length: 30, comment: '요청 ip' })
+  @Column({ nullable: true, type: 'varchar', length: 50, comment: '요청 ip' })
   ip: string;
 
   @ApiProperty({
@@ -61,7 +61,7 @@ export class ErrorLog extends CoreEntity {
   @Column({
     nullable: true,
     type: 'varchar',
-    length: 500,
+    length: 2000,
     comment: 'request body',
   })
   requestBody: string;

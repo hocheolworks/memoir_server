@@ -3,7 +3,7 @@ import { CoreEntity } from 'src/common/entities/core.entity';
 import { User } from 'src/user/user.entity';
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 import constants from './post.constatnts';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 @Entity({ name: 'Post', schema: process.env.DB_SCHEMA_NAME })
 export class Post extends CoreEntity {
@@ -24,10 +24,11 @@ export class Post extends CoreEntity {
   @Column({
     nullable: false,
     type: 'varchar',
-    length: 30,
+    length: 200,
     comment: '게시글 제목',
   })
   @IsNotEmpty()
+  @MaxLength(50)
   postTitle: string;
 
   @ApiProperty({
@@ -42,6 +43,7 @@ export class Post extends CoreEntity {
     length: 300,
     comment: '게시글 URL',
   })
+  @MaxLength(300)
   postUrl: string;
 
   @ApiProperty({
