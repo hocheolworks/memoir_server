@@ -1,8 +1,8 @@
 import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
-import { mergeObjects } from '../helpers/merge-two-obj';
 import { SuccessCommonResponseDto } from '../dtos/success-response.dto';
 import { makeInstanceByApiProperty } from '../helpers/make-instance-by-api-property';
+import { mergeObjects } from '../helpers/merge-two-obj';
 
 interface SuccessResponseOption {
   /**
