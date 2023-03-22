@@ -1,7 +1,13 @@
-import { Injectable, Inject, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import constants from 'src/common/common.constants';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { GeneratePostDto } from './dtos/generate-post.dto';
+import { ModifyPostDto } from './dtos/modify-post.dto';
 import { Post } from './post.entity';
 
 @Injectable()
@@ -28,10 +34,22 @@ export class PostRepository {
   async findPostById(id: number) {
     const post = await this.postRepository
       .createQueryBuilder('p')
+      .leftJoinAndSelect('p.user', 'u')
       .where('p.id = :id', { id })
       .getOne();
 
     return post;
+  }
+
+  async updatePostById(id: number, modifyPostDto: ModifyPostDto) {
+    let result: UpdateResult;
+
+    const instance = this.postRepository.create(modifyPostDto);
+    result = await this.postRepository.update(id, instance);
+
+    if (!result || result.affected === 0) {
+      throw new BadRequestException(constants.errorMessages.FAIL_TO_UPDATE);
+    }
   }
 
   async deletePostById(id: number) {

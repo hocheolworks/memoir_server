@@ -9,23 +9,21 @@ import {
   HttpStatus,
   UseGuards,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { GeneratePostDto } from './dtos/generate-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/decorators/success-response-schema.dto';
 import { PostDto } from './dtos/post.dto';
 import constants from 'src/common/common.constants';
 import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
 import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
-import { userInfo } from 'os';
+import { ModifyPostDto } from './dtos/modify-post.dto';
+import { ResponseFindPostListDto } from './dtos/response-dto/response-find-post-list.dto';
+import { ResponseFindPostDto } from './dtos/response-dto/response-find-post.dto';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -57,7 +55,7 @@ export class PostController {
   })
   @SuccessResponse(HttpStatus.OK, [
     {
-      model: PostDto,
+      model: ResponseFindPostListDto,
       exampleTitle: '요청 성공 응답',
       isArrayResponse: true,
     },
@@ -75,16 +73,30 @@ export class PostController {
   })
   @SuccessResponse(HttpStatus.OK, [
     {
-      model: PostDto,
+      model: ResponseFindPostDto,
       exampleTitle: '요청 성공 응답',
       isArrayResponse: false,
     },
   ])
-  @ApiBearerAuth(constants.props.BearerToken)
-  @UseGuards(MemoirUserGuard)
   @Get(':id')
   findPostById(@Param('id') id: number) {
     return this.postService.findPostById(id);
+  }
+
+  @ApiOperation({
+    summary: '게시글을 수정합니다.',
+  })
+  @HttpCode(204)
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(MemoirUserGuard)
+  @Put(':id')
+  modifyPost(
+    @Param('id') id: number,
+    @Body() modifyPostDto: ModifyPostDto,
+    @GetUserInfo() userInfo: UserInfoDto,
+  ) {
+    modifyPostDto.user = userInfo;
+    return this.postService.modifyPostById(id, modifyPostDto);
   }
 
   @ApiOperation({

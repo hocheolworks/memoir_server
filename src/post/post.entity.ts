@@ -7,8 +7,12 @@ import { IsNotEmpty } from 'class-validator';
 
 @Entity({ name: 'Post', schema: process.env.DB_SCHEMA_NAME })
 export class Post extends CoreEntity {
-  @ManyToOne(() => User, (user) => user.id, { nullable: false })
-  @JoinColumn({ name: 'userId' })
+  @ApiProperty({
+    description: '유저 객체',
+    type: () => User,
+    required: false,
+  })
+  @ManyToOne(() => User, (user) => user.id, { nullable: false, eager: true })
   @IsNotEmpty()
   user: User;
 
@@ -26,6 +30,12 @@ export class Post extends CoreEntity {
   @IsNotEmpty()
   postTitle: string;
 
+  @ApiProperty({
+    example:
+      'https://github.com/JeongCheolLee/memoir-JeongCheolLee/blob/main/%ED%98%B8%EC%A0%95%EC%9D%B4%20%EA%B8%80%20%ED%9B%94%EC%B9%98%EA%B8%B0',
+    description: '게시글 URL',
+    required: false,
+  })
   @Column({
     nullable: false,
     type: 'varchar',
@@ -34,6 +44,11 @@ export class Post extends CoreEntity {
   })
   postUrl: string;
 
+  @ApiProperty({
+    example: 0,
+    description: '조회수',
+    required: false,
+  })
   @Column({
     nullable: false,
     type: 'int',
@@ -41,4 +56,11 @@ export class Post extends CoreEntity {
     default: 0,
   })
   views?: number;
+
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    comment: '파일에 대한 sha 값(업데이트 시 필요)',
+  })
+  sha?: string;
 }
