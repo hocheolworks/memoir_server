@@ -12,7 +12,6 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
-
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalInterceptors(new TransformInterceptor());
 
