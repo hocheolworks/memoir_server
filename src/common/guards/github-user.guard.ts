@@ -8,13 +8,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, isAxiosError } from 'axios';
 import constants from '../common.constants';
 import { firstValueFrom } from 'rxjs';
+import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 
 @Injectable()
 export class GithubUserGuard implements CanActivate {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly thirdPartyLoggerService: ThirdPartyLoggerService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
@@ -36,6 +40,8 @@ export class GithubUserGuard implements CanActivate {
         this.httpService.get(`https://api.github.com/user`, { headers }),
       );
     } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(constants.errorMessages.INVALID_TOKEN);
     }
 

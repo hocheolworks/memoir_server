@@ -11,12 +11,14 @@ import constants from './user.constatns';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';
 import { UserRepository } from './user.repository';
 import { GenerateUserDto } from './dtos/generate-user.dto';
+import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly httpService: HttpService,
     private readonly userRepository: UserRepository,
+    private readonly thirdPartyLoggerService: ThirdPartyLoggerService,
   ) {}
 
   async generateAccessToken(
@@ -46,6 +48,8 @@ export class UserService {
         ),
       );
     } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(
         constants.errorMessages.GITHUB_LOGIN_FAILED,
       );
@@ -72,6 +76,8 @@ export class UserService {
         this.httpService.get(`https://api.github.com/user`, { headers }),
       );
     } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(
         constants.errorMessages.GET_GITHUB_USER_INFO_FAILED,
       );
@@ -117,6 +123,8 @@ export class UserService {
         }),
       );
     } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(
         constants.errorMessages.CREATE_MEMOIR_REPOSITORY_FAILED,
       );

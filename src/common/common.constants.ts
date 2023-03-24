@@ -15,6 +15,7 @@ const constants = {
   dataBaseProviders: {
     DATA_SOURCE: 'DATA_SOURCE',
     ERROR_LOG: 'ErrorLog',
+    THIRD_PARTY_ERROR_LOG: 'ThirdPartyErrorLog',
     USER: 'User',
     POST: 'Post',
   },

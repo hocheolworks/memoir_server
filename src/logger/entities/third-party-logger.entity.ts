@@ -20,8 +20,20 @@ export class ThirdPartyErrorLog extends CoreEntity {
     example: '/api/oauth/test',
     description: '요청 URL',
   })
-  @Column({ nullable: true, type: 'varchar', length: 200, comment: '요청 URL' })
-  originalUrl?: string;
+  @Column({ nullable: true, type: 'varchar', length: 300, comment: '요청 URL' })
+  requestUrl?: string;
+
+  @ApiProperty({
+    example: { message: 'hello~!' },
+    description: '요청 URL',
+  })
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    length: 1000,
+    comment: '요청 Body',
+  })
+  requestBody?: string;
 
   @ApiProperty({
     example: '500',

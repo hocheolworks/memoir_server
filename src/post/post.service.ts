@@ -3,12 +3,12 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, AxiosError, isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
+import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 import { GeneratePostDto } from './dtos/generate-post.dto';
 import { ModifyPostDto } from './dtos/modify-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
@@ -20,6 +20,7 @@ export class PostService {
   constructor(
     private readonly postRepository: PostRepository,
     private readonly httpService: HttpService,
+    private readonly thirdPartyLoggerService: ThirdPartyLoggerService,
   ) {}
   async generatePost(generatePostDto: GeneratePostDto) {
     const userInfo = generatePostDto.user;
@@ -49,12 +50,14 @@ export class PostService {
         ),
       );
     } catch (e) {
-      console.log(e);
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       if (e.reponse.status === 422) {
         throw new ConflictException(
           constants.errorMessages.DUPLICATED_FILE_NAME,
         );
       }
+
       throw new BadRequestException(
         constants.errorMessages.FAIL_TO_UPLOAD_TO_GITHUB,
       );
@@ -94,8 +97,9 @@ export class PostService {
           },
         ),
       );
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(
         constants.errorMessages.FAIL_TO_READ_POST_FROM_GITHUB,
       );
@@ -149,20 +153,18 @@ export class PostService {
         ),
       );
     } catch (e) {
-      console.log(e);
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
       throw new BadRequestException(
         constants.errorMessages.FAIL_TO_UPDATE_TO_GITHUB,
       );
     }
 
-    console.log(modifyPostResult.data.content);
     const postUrl = modifyPostResult.data.content.html_url;
     sha = modifyPostResult.data.content.sha;
 
     modifyPostDto.postUrl = postUrl;
     modifyPostDto.sha = sha;
-
-    console.log(modifyPostDto);
 
     return await this.postRepository.updatePostById(id, { ...modifyPostDto });
   }
