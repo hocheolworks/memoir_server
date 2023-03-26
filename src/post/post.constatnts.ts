@@ -12,6 +12,7 @@ const constants = {
   },
   props: {
     USER_IDX: 'user_index',
+    CATEGORY_IDX: 'category_IDX',
   },
 };
 

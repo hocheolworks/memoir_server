@@ -18,6 +18,7 @@ const constants = {
     THIRD_PARTY_ERROR_LOG: 'ThirdPartyErrorLog',
     USER: 'User',
     POST: 'Post',
+    POST_CATEOGRY: 'PostCategory',
   },
 };
 

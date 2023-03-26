@@ -1,6 +1,6 @@
 import constants from 'src/common/common.constants';
 import { DataSource } from 'typeorm';
-import { Post } from './post.entity';
+import { Post } from '../entities/post.entity';
 
 export const postProviders = [
   {

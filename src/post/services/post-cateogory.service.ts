@@ -9,14 +9,14 @@ import {
 import { AxiosResponse, AxiosError, isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
-import { GeneratePostDto } from './dtos/generate-post.dto';
-import { ModifyPostDto } from './dtos/modify-post.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
-import constants from './post.constatnts';
-import { PostRepository } from './post.repository';
+import { GeneratePostDto } from '../dtos/generate-post.dto';
+import { ModifyPostDto } from '../dtos/modify-post.dto';
+import { UpdatePostDto } from '../dtos/update-post.dto';
+import constants from '../post.constatnts';
+import { PostRepository } from '../repositories/post.repository';
 
 @Injectable()
-export class PostService {
+export class PostCategoryService {
   constructor(
     private readonly postRepository: PostRepository,
     private readonly httpService: HttpService,

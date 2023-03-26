@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpStatus,
@@ -11,19 +10,18 @@ import {
   HttpCode,
   Put,
 } from '@nestjs/common';
-import { PostService } from './post.service';
-import { GeneratePostDto } from './dtos/generate-post.dto';
-import { UpdatePostDto } from './dtos/update-post.dto';
+import { PostService } from '../services/post.service';
+import { GeneratePostDto } from '../dtos/generate-post.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/common/decorators/success-response-schema.dto';
-import { PostDto } from './dtos/post.dto';
+import { PostDto } from '../dtos/post.dto';
 import constants from 'src/common/common.constants';
 import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
 import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
-import { ModifyPostDto } from './dtos/modify-post.dto';
-import { ResponseFindPostListDto } from './dtos/response-dto/response-find-post-list.dto';
-import { ResponseFindPostDto } from './dtos/response-dto/response-find-post.dto';
+import { ModifyPostDto } from '../dtos/modify-post.dto';
+import { ResponseFindPostListDto } from '../dtos/response-dto/response-find-post-list.dto';
+import { ResponseFindPostDto } from '../dtos/response-dto/response-find-post.dto';
 
 @ApiTags('Post')
 @Controller('posts')

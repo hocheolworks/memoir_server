@@ -1,14 +1,9 @@
-import {
-  Injectable,
-  Inject,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import constants from 'src/common/common.constants';
 import { Repository, UpdateResult } from 'typeorm';
-import { GeneratePostDto } from './dtos/generate-post.dto';
-import { ModifyPostDto } from './dtos/modify-post.dto';
-import { Post } from './post.entity';
+import { GeneratePostDto } from '../dtos/generate-post.dto';
+import { ModifyPostDto } from '../dtos/modify-post.dto';
+import { Post } from '../entities/post.entity';
 
 @Injectable()
 export class PostRepository {

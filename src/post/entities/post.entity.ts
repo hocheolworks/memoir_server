@@ -2,8 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { User } from 'src/user/user.entity';
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
-import constants from './post.constatnts';
+import constants from '../post.constatnts';
 import { IsNotEmpty, MaxLength } from 'class-validator';
+import { PostCategory } from './post-category.entity';
 
 @Entity({ name: 'Post', schema: process.env.DB_SCHEMA_NAME })
 export class Post extends CoreEntity {
@@ -65,4 +66,15 @@ export class Post extends CoreEntity {
     comment: '파일에 대한 sha 값(업데이트 시 필요)',
   })
   sha?: string;
+
+  @ApiProperty({
+    type: () => PostCategory,
+    description: '게시글 분류 테이블 id',
+    required: false,
+  })
+  @ManyToOne(() => PostCategory, (postCategory) => postCategory.id, {
+    nullable: true,
+  })
+  @JoinColumn()
+  postCategory: PostCategory;
 }

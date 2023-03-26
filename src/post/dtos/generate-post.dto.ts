@@ -13,17 +13,17 @@ export class GeneratePostDto extends PickType(PostDto, ['postTitle']) {
 
   @ApiProperty({
     example: 'backend',
-    description: '글의 대분류',
+    description: '게시글의 대분류',
     required: false,
   })
-  firstDepth?: number;
+  parentCateogry?: number;
 
   @ApiProperty({
     example: 'nestjs',
     description: '글의 소분류',
     required: false,
   })
-  secondDepth?: number;
+  childCategory?: number;
 
   sha?: string;
   accessToken?: string;
