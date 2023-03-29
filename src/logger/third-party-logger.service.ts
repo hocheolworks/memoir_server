@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import constants from 'src/common/common.constants';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ThirdPartyErrorLog } from './entities/third-party-logger.entity';
 import { GenerateThirdPartyErrorLogDto } from './dtos/generate-third-party-error-log.dto';
 import { AxiosError, isAxiosError } from 'axios';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ThirdPartyLoggerService {
   constructor(
-    @Inject(constants.dataBaseProviders.THIRD_PARTY_ERROR_LOG)
+    @InjectRepository(ThirdPartyErrorLog)
     private readonly errorLogRepository: Repository<ThirdPartyErrorLog>,
   ) {}
 

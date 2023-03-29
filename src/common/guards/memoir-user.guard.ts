@@ -65,7 +65,7 @@ export class MemoirUserGuard implements CanActivate {
     }
     memoirUser.accesstoken = request.headers.authorization;
 
-    request['userInfo'] = memoirUser;
+    request['userInfo'] = { ...userInfo, ...memoirUser };
 
     return true;
   }

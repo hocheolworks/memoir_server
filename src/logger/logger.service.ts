@@ -6,6 +6,7 @@ import constants from 'src/common/common.constants';
 import { Repository } from 'typeorm';
 import { ErrorLog } from './entities/logger.entity';
 import { GenerateErrorLogDto } from './dtos/generate-error-log.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 const { errors, combine, timestamp, printf } = winston.format;
 
@@ -14,7 +15,7 @@ export class LoggerService implements LS {
   private logger: winston.Logger;
 
   constructor(
-    @Inject(constants.dataBaseProviders.ERROR_LOG)
+    @InjectRepository(ErrorLog)
     private readonly errorLogRepository: Repository<ErrorLog>,
   ) {
     this.logger = winston.createLogger({

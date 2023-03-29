@@ -16,8 +16,8 @@ import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly httpService: HttpService,
     private readonly userRepository: UserRepository,
+    private readonly httpService: HttpService,
     private readonly thirdPartyLoggerService: ThirdPartyLoggerService,
   ) {}
 

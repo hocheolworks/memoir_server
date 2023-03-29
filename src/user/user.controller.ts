@@ -8,12 +8,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { GenerateGithubAccessTokenDto } from './dtos/generate-github-access-token.dto';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';

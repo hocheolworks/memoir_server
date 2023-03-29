@@ -14,6 +14,7 @@ export class Post extends CoreEntity {
     required: false,
   })
   @ManyToOne(() => User, (user) => user.id, { nullable: false, eager: true })
+  @JoinColumn()
   @IsNotEmpty()
   user: User;
 

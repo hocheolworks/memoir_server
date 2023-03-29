@@ -1,6 +1,7 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import constants from 'src/common/common.constants';
-import { Repository, UpdateResult } from 'typeorm';
+import { EntityManager, Repository, UpdateResult } from 'typeorm';
 import { GeneratePostDto } from '../dtos/generate-post.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
 import { Post } from '../entities/post.entity';
@@ -8,13 +9,24 @@ import { Post } from '../entities/post.entity';
 @Injectable()
 export class PostRepository {
   constructor(
-    @Inject(constants.dataBaseProviders.POST)
+    @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async createPost(generatePostDto: GeneratePostDto) {
-    const createSpotGroup = this.postRepository.create({ ...generatePostDto });
-    return await this.postRepository.save(createSpotGroup);
+  async createPost(
+    generatePostDto: GeneratePostDto,
+    transactionManager?: EntityManager,
+  ) {
+    let createPostResult: Post;
+
+    if (transactionManager) {
+      createPostResult = transactionManager.create(Post, generatePostDto);
+      console.log(createPostResult);
+      return await transactionManager.save(createPostResult);
+    } else {
+      createPostResult = this.postRepository.create(generatePostDto);
+      return await this.postRepository.save(createPostResult);
+    }
   }
 
   async findPostsByUserId(userId: number) {
@@ -36,13 +48,23 @@ export class PostRepository {
     return post;
   }
 
-  async updatePostById(id: number, modifyPostDto: ModifyPostDto) {
-    let result: UpdateResult;
+  async updatePostById(
+    id: number,
+    modifyPostDto: ModifyPostDto,
+    transactionManager?: EntityManager,
+  ) {
+    let instance: Post;
+    let updateResult: UpdateResult;
 
-    const instance = this.postRepository.create(modifyPostDto);
-    result = await this.postRepository.update(id, instance);
+    if (transactionManager) {
+      instance = transactionManager.create(Post, modifyPostDto);
+      updateResult = await transactionManager.update(Post, { id }, instance);
+    } else {
+      instance = this.postRepository.create(modifyPostDto);
+      updateResult = await this.postRepository.update(id, instance);
+    }
 
-    if (!result || result.affected === 0) {
+    if (!updateResult || updateResult.affected === 0) {
       throw new BadRequestException(constants.errorMessages.FAIL_TO_UPDATE);
     }
   }
