@@ -76,9 +76,10 @@ export class PostService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
+    let sha: string;
     try {
       const postUrl = generatePostResult.data.content.html_url;
-      const sha = generatePostResult.data.content.sha;
+      sha = generatePostResult.data.content.sha;
 
       generatePostDto.postUrl = postUrl;
       generatePostDto.sha = sha;
@@ -125,13 +126,18 @@ export class PostService {
       let deletePostResult: AxiosResponse;
 
       try {
+        const body = {
+          sha,
+          message: `업로드 실패로 삭제된 게시글`,
+        };
+
         deletePostResult = await firstValueFrom(
-          this.httpService.delete(
-            `https://api.github.com/repos/${userInfo.githubUserName}/memoir-${userInfo.githubUserName}/contents/${generatePostDto.postTitle}.md`,
-            {
-              headers,
-            },
-          ),
+          this.httpService.request({
+            url: `https://api.github.com/repos/${userInfo.githubUserName}/memoir-${userInfo.githubUserName}/contents/${generatePostDto.postTitle}.md`,
+            method: 'delete',
+            headers: headers,
+            data: body,
+          }),
         );
       } catch (err) {
         await this.thirdPartyLoggerService.createThirdPartyErrorLog(err);
@@ -184,8 +190,6 @@ export class PostService {
     const encodedContent = Buffer.from(content, 'base64').toString();
     post['postBody'] = encodedContent;
 
-    delete post.user;
-
     return post;
   }
 
@@ -194,6 +198,12 @@ export class PostService {
 
     if (!modifyTarget) {
       throw new BadRequestException(constants.errorMessages.POST_NOT_FOUND);
+    }
+
+    if (modifyTarget.user.id !== modifyPostDto.user.id) {
+      throw new UnauthorizedException(
+        constants.errorMessages.UNAUTHORIZED_USER,
+      );
     }
 
     let sha: string;
@@ -216,9 +226,8 @@ export class PostService {
       sha,
     };
 
-    let modifyPostResult: AxiosResponse;
     try {
-      modifyPostResult = await firstValueFrom(
+      await firstValueFrom(
         this.httpService.put(
           `https://api.github.com/repos/${userInfo.githubUserName}/memoir-${userInfo.githubUserName}/contents/${modifyPostDto.postTitle}.md`,
           body,
