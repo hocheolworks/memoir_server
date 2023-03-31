@@ -8,10 +8,11 @@ import { PostCategoryService } from './services/post-cateogory.service';
 import { Post } from './entities/post.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostCategory } from './entities/post-category.entity';
+import { PostCateogoryController } from './controllers/post-category.controller';
 
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([Post, PostCategory])],
-  controllers: [PostController],
+  controllers: [PostController, PostCateogoryController],
   providers: [
     PostService,
     PostRepository,

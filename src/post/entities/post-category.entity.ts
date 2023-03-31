@@ -4,6 +4,7 @@ import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 import constants from '../post.constatnts';
 import { IsNotEmpty, MaxLength } from 'class-validator';
 import { User } from 'src/user/user.entity';
+import { Expose } from 'class-transformer';
 
 @Entity({ name: 'PostCategory', schema: process.env.DB_SCHEMA_NAME })
 @Index(

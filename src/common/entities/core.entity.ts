@@ -11,6 +11,7 @@ export class CoreEntity {
     description: '데이터 ID(PK)',
     readOnly: true,
     example: 1,
+    required: false,
   })
   @PrimaryGeneratedColumn({ comment: '데이터 ID(PK)' })
   id: number;

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import constants from 'src/common/common.constants';
 import { EntityManager, Repository, UpdateResult } from 'typeorm';
@@ -36,6 +40,22 @@ export class PostCategoryRepository {
     }
   }
 
+  async findPostCategoryById(id: number) {
+    const postCategory = await this.postCatgegoryRepository
+      .createQueryBuilder('pc')
+      .leftJoinAndSelect('pc.user', 'user')
+      .where('pc.id = :id', { id })
+      .getOne();
+
+    if (!postCategory) {
+      throw new BadRequestException(
+        constants.errorMessages.POST_CATEGORY_NOT_FOUND,
+      );
+    }
+
+    return postCategory;
+  }
+
   async findPostCategory(findPostCategoryDto: FindPostCategoryDto) {
     const postCategoryQuery = this.postCatgegoryRepository
       .createQueryBuilder('pc')
@@ -59,9 +79,60 @@ export class PostCategoryRepository {
       });
     }
 
+    if (findPostCategoryDto.userId) {
+      postCategoryQuery.andWhere('pc.userId = :userId', {
+        userId: findPostCategoryDto.userId,
+      });
+    }
+
     const postCategory = await postCategoryQuery.getOne();
 
+    if (!postCategory) {
+      throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
+    }
+
     return postCategory;
+  }
+
+  async findPostCategoryList(findPostCategoryDto: FindPostCategoryDto) {
+    const postCategoryQuery = this.postCatgegoryRepository
+      .createQueryBuilder('pc')
+      .where('1=1');
+
+    if (findPostCategoryDto.parentCategory) {
+      postCategoryQuery.andWhere('pc.parentCategory = :parentCategory', {
+        parentCategory: findPostCategoryDto.parentCategory,
+      });
+    }
+
+    if (findPostCategoryDto.childCategory) {
+      postCategoryQuery.andWhere('pc.childCategory = :childCategory', {
+        childCategory: findPostCategoryDto.childCategory,
+      });
+    }
+
+    if (findPostCategoryDto.user) {
+      postCategoryQuery.andWhere('pc.userId = :userId', {
+        userId: findPostCategoryDto.user.id,
+      });
+    }
+
+    if (findPostCategoryDto.userId) {
+      postCategoryQuery.andWhere('pc.user.id = :userId', {
+        userId: findPostCategoryDto.userId,
+      });
+    }
+
+    const [postCategoryList, length] =
+      await postCategoryQuery.getManyAndCount();
+
+    if (length === 0) {
+      throw new NotFoundException(
+        constants.errorMessages.POST_CATEGORY_NOT_FOUND,
+      );
+    }
+
+    return postCategoryList;
   }
 
   async updatePostCategoryById(
@@ -73,7 +144,9 @@ export class PostCategoryRepository {
     let updateResult: UpdateResult;
 
     if (transactionManager) {
-      instance = transactionManager.create(PostCategory, modifyPostCategoryDto);
+      instance = transactionManager.create(PostCategory, {
+        ...modifyPostCategoryDto,
+      });
       updateResult = await transactionManager.update(
         PostCategory,
         { id },
