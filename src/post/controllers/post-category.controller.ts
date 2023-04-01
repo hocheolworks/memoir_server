@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -18,13 +19,37 @@ import { PostCategoryDto } from '../dtos/post-category.dto';
 import { PostCategoryService } from '../services/post-cateogory.service';
 import constants from 'src/common/common.constants';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
-import { UserInfo } from 'os';
+import { userInfo, UserInfo } from 'os';
 import { User } from 'src/user/user.entity';
+import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 
 @ApiTags('PostCategories')
 @Controller('post-categories')
 export class PostCateogoryController {
   constructor(private readonly postCategoryService: PostCategoryService) {}
+
+  @ApiOperation({
+    summary: '게시글 카테고리를 생성합니다.',
+  })
+  @SuccessResponse(HttpStatus.CREATED, [
+    {
+      model: PostCategoryDto,
+      exampleTitle: '요청 성공 응답',
+      isArrayResponse: false,
+    },
+  ])
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(MemoirUserGuard)
+  @Post()
+  async generatePostCategory(
+    @Body() generatePostCategoryDto: GeneratePostCategoryDto,
+    @GetUserInfo() userInfo: User,
+  ) {
+    generatePostCategoryDto.user = userInfo;
+    return await this.postCategoryService.generatePostCategory(
+      generatePostCategoryDto,
+    );
+  }
 
   @ApiOperation({
     summary: '게시글 카테고리를 불러옵니다.',

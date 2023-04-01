@@ -1,5 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import constants from './common/common.constants';
 import { WinstonLogger } from './common/helpers/winstonLogger';
@@ -25,8 +29,14 @@ async function bootstrap() {
     )
     .build();
 
+  const swaggerCustomOptions: SwaggerCustomOptions = {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  };
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api-docs', app, document, swaggerCustomOptions);
 
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 

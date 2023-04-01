@@ -10,6 +10,7 @@ const constants = {
     POST_NOT_FOUND: '존재하지 않는 게시글입니다.',
     FAIL_TO_READ_POST_FROM_GITHUB:
       '깃허브에서 게시글을 불러오는데 실패했습니다.',
+    DUPLICATED_POST_CATEGORY: '이미 존재하는 카테고리입니다.',
   },
   props: {
     USER_IDX: 'user_index',

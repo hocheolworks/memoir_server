@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
@@ -14,6 +18,17 @@ export class PostCategoryService {
   ) {}
 
   async generatePostCategory(generatePostCategoryDto: GeneratePostCategoryDto) {
+    const checkConflictPostCategory = await this.findPostCategory({
+      userId: generatePostCategoryDto.user.id,
+      parentCategory: generatePostCategoryDto.parentCategory,
+      childCategory: generatePostCategoryDto.childCategory,
+    });
+
+    if (checkConflictPostCategory) {
+      throw new ConflictException(
+        constants.errorMessages.DUPLICATED_POST_CATEGORY,
+      );
+    }
     return await this.postCategoryRepository.createPostCategory(
       generatePostCategoryDto,
     );
