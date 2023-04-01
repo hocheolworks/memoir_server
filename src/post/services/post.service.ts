@@ -190,6 +190,11 @@ export class PostService {
     const encodedContent = Buffer.from(content, 'base64').toString();
     post['postBody'] = encodedContent;
 
+    const modiftyPostDto = new ModifyPostDto();
+    modiftyPostDto.views = Number(post.views + 1);
+
+    await this.postRepository.updatePostById(id, modiftyPostDto);
+
     return post;
   }
 
