@@ -8,6 +8,7 @@ import { LoggerModule } from './logger/logger.module';
 import { PostModule } from './post/post.module';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentModule } from './comment/comment.module';
 
 let envFilePath = '.envs/.env.development';
 if (process.env.NODE_ENV === 'production') envFilePath = 'envs/.env.production';
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === 'production') envFilePath = 'envs/.env.production';
     UserModule,
     LoggerModule,
     PostModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
