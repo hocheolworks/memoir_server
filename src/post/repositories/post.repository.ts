@@ -33,6 +33,8 @@ export class PostRepository {
     const posts = await this.postRepository
       .createQueryBuilder('p')
       .where('p.userId = :userId', { userId: userId })
+      .leftJoin('p.postCategory', 'pc')
+      .addSelect(['pc.id', 'pc.parentCategory', 'pc.childCategory'])
       .getMany();
 
     return posts;
