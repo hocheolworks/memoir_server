@@ -65,4 +65,18 @@ export class PostCategoryService {
       modifyPostCategoryDto,
     );
   }
+
+  async deletePostCategoryById(userId: number, id: number) {
+    const postCategory = await this.postCategoryRepository.findPostCategoryById(
+      id,
+    );
+
+    if (postCategory.user.id !== userId) {
+      throw new UnauthorizedException(
+        constants.errorMessages.UNAUTHORIZED_USER,
+      );
+    }
+
+    return await this.postCategoryRepository.deletePostCategory(id);
+  }
 }

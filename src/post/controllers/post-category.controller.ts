@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -86,6 +87,23 @@ export class PostCateogoryController {
       userInfo.id,
       id,
       modifyPostCategoryDto,
+    );
+  }
+
+  @ApiOperation({
+    summary: '게시글 카테고리를 수정합니다.',
+  })
+  @HttpCode(204)
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(MemoirUserGuard)
+  @Delete(':id')
+  async deletePostCategory(
+    @Param('id') id: number,
+    @GetUserInfo() userInfo: User,
+  ) {
+    return await this.postCategoryService.deletePostCategoryById(
+      userInfo.id,
+      id,
     );
   }
 }

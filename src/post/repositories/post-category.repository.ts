@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import constants from 'src/common/common.constants';
-import { EntityManager, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, EntityManager, Repository, UpdateResult } from 'typeorm';
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
@@ -159,6 +159,20 @@ export class PostCategoryRepository {
 
     if (!updateResult || updateResult.affected === 0) {
       throw new BadRequestException(constants.errorMessages.FAIL_TO_UPDATE);
+    }
+  }
+
+  async deletePostCategory(id: number, transactionManager?: EntityManager) {
+    let deleteResult: DeleteResult;
+
+    if (transactionManager) {
+      deleteResult = await transactionManager.softDelete(PostCategory, { id });
+    } else {
+      deleteResult = await this.postCatgegoryRepository.softDelete({ id });
+    }
+
+    if (!deleteResult || deleteResult.affected === 0) {
+      throw new BadRequestException(constants.errorMessages.FAIL_TO_DELETE);
     }
   }
 }
