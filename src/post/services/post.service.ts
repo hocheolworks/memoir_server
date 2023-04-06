@@ -9,6 +9,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
+import { UserService } from 'src/user/user.service';
 import { DataSource } from 'typeorm';
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
@@ -29,6 +30,7 @@ export class PostService {
     private readonly httpService: HttpService,
     private readonly thirdPartyLoggerService: ThirdPartyLoggerService,
     private readonly dataSource: DataSource,
+    private readonly userService: UserService,
   ) {}
   async generatePost(generatePostDto: GeneratePostDto) {
     const userInfo = generatePostDto.user;
@@ -155,6 +157,12 @@ export class PostService {
 
   async findPostsByUserId(userId: number) {
     return await this.postRepository.findPostsByUserId(userId);
+  }
+
+  async findPostsByGithubUserId(githubUserId: string) {
+    const user = await this.userService.findUserByGithubUserName(githubUserId);
+
+    return await this.postRepository.findPostsByUserId(user.id);
   }
 
   async findPostById(id: number) {

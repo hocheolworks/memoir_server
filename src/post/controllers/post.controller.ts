@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { GeneratePostDto } from '../dtos/generate-post.dto';
@@ -22,6 +23,7 @@ import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
 import { ResponseFindPostListDto } from '../dtos/response-dto/response-find-post-list.dto';
 import { ResponseFindPostDto } from '../dtos/response-dto/response-find-post.dto';
+import { FindPostListDto } from '../dtos/find-post-list.dto';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -46,6 +48,23 @@ export class PostController {
   ) {
     generatePostDto.user = userInfo;
     return this.postService.generatePost(generatePostDto);
+  }
+
+  @ApiOperation({
+    summary: '게시물 리스트를 불러옵니다.',
+  })
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: ResponseFindPostListDto,
+      exampleTitle: '요청 성공 응답',
+      isArrayResponse: true,
+    },
+  ])
+  @Get()
+  findPosts(@Query() findPostListDto: FindPostListDto) {
+    return this.postService.findPostsByGithubUserId(
+      findPostListDto.githubUserName,
+    );
   }
 
   @ApiOperation({
