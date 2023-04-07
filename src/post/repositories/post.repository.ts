@@ -40,6 +40,18 @@ export class PostRepository {
     return posts;
   }
 
+  async findPostListOrderByViews(skip: number, take: number) {
+    const posts = await this.postRepository
+      .createQueryBuilder('p')
+      .select()
+      .orderBy('p.views', 'DESC')
+      .skip(skip)
+      .take(take)
+      .getMany();
+
+    return posts;
+  }
+
   async findPostById(id: number) {
     const post = await this.postRepository
       .createQueryBuilder('p')

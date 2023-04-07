@@ -159,6 +159,10 @@ export class PostService {
     return await this.postRepository.findPostsByUserId(userId);
   }
 
+  async findPostListOrderByViews(skip: number, take: number) {
+    return await this.postRepository.findPostListOrderByViews(skip, take);
+  }
+
   async findPostsByGithubUserId(githubUserId: string) {
     const user = await this.userService.findUserByGithubUserName(githubUserId);
 

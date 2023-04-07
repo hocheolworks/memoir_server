@@ -86,6 +86,21 @@ export class PostController {
   }
 
   @ApiOperation({
+    summary: '인기 게시글을 불러옵니다.',
+  })
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: ResponseFindPostDto,
+      exampleTitle: '요청 성공 응답',
+      isArrayResponse: false,
+    },
+  ])
+  @Get('hottest')
+  findPostListOrderByViews() {
+    return this.postService.findPostListOrderByViews(0, 10);
+  }
+
+  @ApiOperation({
     summary: '게시글을 불러옵니다.',
   })
   @SuccessResponse(HttpStatus.OK, [
