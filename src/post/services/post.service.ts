@@ -159,8 +159,8 @@ export class PostService {
     return await this.postRepository.findPostsByUserId(userId);
   }
 
-  async findPostListOrderByViews(skip: number, take: number) {
-    return await this.postRepository.findPostListOrderByViews(skip, take);
+  async findPostListOrderByViews(page: number, pageSize: number) {
+    return await this.postRepository.findPostListOrderByViews(page, pageSize);
   }
 
   async findPostsByGithubUserId(githubUserId: string) {

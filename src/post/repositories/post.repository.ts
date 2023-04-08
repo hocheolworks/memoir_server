@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import constants from 'src/common/common.constants';
 import { EntityManager, Repository, UpdateResult } from 'typeorm';
@@ -40,14 +45,18 @@ export class PostRepository {
     return posts;
   }
 
-  async findPostListOrderByViews(skip: number, take: number) {
+  async findPostListOrderByViews(page: number, pageSize: number) {
     const posts = await this.postRepository
       .createQueryBuilder('p')
       .select()
       .orderBy('p.views', 'DESC')
-      .skip(skip)
-      .take(take)
+      .skip(pageSize * (page - 1))
+      .take(pageSize)
       .getMany();
+
+    if (!posts) {
+      throw new NotFoundException(constants.errorMessages.POST_NOT_FOUND);
+    }
 
     return posts;
   }

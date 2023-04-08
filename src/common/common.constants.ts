@@ -8,6 +8,7 @@ const constants = {
     FAIL_TO_UPDATE: '업데이트에 실패했습니다.',
     FAIL_TO_DELETE: '삭제에 실패했습니다.',
     POST_CATEGORY_NOT_FOUND: '게시글 카테고리가 존재하지 않습니다.',
+    POST_NOT_FOUND: '게시글이 존재하지 않습니다.',
   },
   translates: {},
   props: {

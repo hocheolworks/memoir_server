@@ -96,8 +96,11 @@ export class PostController {
     },
   ])
   @Get('hottest')
-  findPostListOrderByViews() {
-    return this.postService.findPostListOrderByViews(0, 10);
+  findPostListOrderByViews(
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    return this.postService.findPostListOrderByViews(page, pageSize);
   }
 
   @ApiOperation({
