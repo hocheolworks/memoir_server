@@ -273,7 +273,7 @@ export class PostService {
 
     try {
       const updateCategoryDto = new ModifyPostCategoryDto();
-      updateCategoryDto.parentCategory = modifyPostDto.parentCateogry;
+      updateCategoryDto.parentCategory = modifyPostDto.parentCategory;
       updateCategoryDto.childCategory = modifyPostDto.childCategory;
 
       await this.postRepository.updatePostById(
