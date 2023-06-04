@@ -45,6 +45,8 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
+      - name: ENV test
+        run: pwd
       - name: rm legacy envfile
         run: rm -rf ../memoir_server/.envs/.env.production
       - name: Make envfile
@@ -61,7 +63,7 @@ jobs:
           envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
           envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
           file_name: .env.production
-          directory: ../memoir_server/.envs
+          directory: .. /memoir_server/.envs
       - name: ENV test
         run: cat .envs/.env.production
       - name: User add for docker Login
