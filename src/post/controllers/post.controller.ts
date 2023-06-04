@@ -143,6 +143,6 @@ export class PostController {
   @Delete(':id')
   remove(@Param('id') id: number, @GetUserInfo() userInfo: UserInfoDto) {
     const userId = userInfo.id;
-    return this.postService.deletePostById(id, userId);
+    return this.postService.removePostById(id, userId);
   }
 }

@@ -299,7 +299,7 @@ export class PostService {
     return;
   }
 
-  async deletePostById(id: number, userId: number) {
+  async removePostById(id: number, userId: number) {
     const post = await this.findPostById(id);
     const author = post.user.id;
 
@@ -309,13 +309,5 @@ export class PostService {
       );
     }
     return await this.postRepository.deletePostById(id);
-  }
-
-  findAll() {
-    return `This action returns all post`;
-  }
-
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
   }
 }
