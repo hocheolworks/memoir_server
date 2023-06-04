@@ -16,7 +16,7 @@ import { PostCategory } from '../entities/post-category.entity';
 export class PostCategoryRepository {
   constructor(
     @InjectRepository(PostCategory)
-    private readonly postCatgegoryRepository: Repository<PostCategory>,
+    private readonly postCategoryRepository: Repository<PostCategory>,
   ) {}
 
   async createPostCategory(
@@ -32,16 +32,16 @@ export class PostCategoryRepository {
 
       return await transactionManager.save(createPostCategoryResult);
     } else {
-      const createPostCategoty = this.postCatgegoryRepository.create({
+      const createPostCategory = this.postCategoryRepository.create({
         ...generatePostCategoryDto,
       });
 
-      return await this.postCatgegoryRepository.save(createPostCategoty);
+      return await this.postCategoryRepository.save(createPostCategory);
     }
   }
 
   async findPostCategoryById(id: number) {
-    const postCategory = await this.postCatgegoryRepository
+    const postCategory = await this.postCategoryRepository
       .createQueryBuilder('pc')
       .leftJoinAndSelect('pc.user', 'user')
       .where('pc.id = :id', { id })
@@ -57,7 +57,7 @@ export class PostCategoryRepository {
   }
 
   async findPostCategory(findPostCategoryDto: FindPostCategoryDto) {
-    const postCategoryQuery = this.postCatgegoryRepository
+    const postCategoryQuery = this.postCategoryRepository
       .createQueryBuilder('pc')
       .where('1=1');
 
@@ -95,7 +95,7 @@ export class PostCategoryRepository {
   }
 
   async findPostCategoryList(findPostCategoryDto: FindPostCategoryDto) {
-    const postCategoryQuery = this.postCatgegoryRepository
+    const postCategoryQuery = this.postCategoryRepository
       .createQueryBuilder('pc')
       .where('1=1');
 
@@ -153,8 +153,8 @@ export class PostCategoryRepository {
         instance,
       );
     } else {
-      instance = this.postCatgegoryRepository.create(modifyPostCategoryDto);
-      updateResult = await this.postCatgegoryRepository.update(id, instance);
+      instance = this.postCategoryRepository.create(modifyPostCategoryDto);
+      updateResult = await this.postCategoryRepository.update(id, instance);
     }
 
     if (!updateResult || updateResult.affected === 0) {
@@ -168,7 +168,7 @@ export class PostCategoryRepository {
     if (transactionManager) {
       deleteResult = await transactionManager.softDelete(PostCategory, { id });
     } else {
-      deleteResult = await this.postCatgegoryRepository.softDelete({ id });
+      deleteResult = await this.postCategoryRepository.softDelete({ id });
     }
 
     if (!deleteResult || deleteResult.affected === 0) {

@@ -103,7 +103,7 @@ export class UserService {
   }
 
   async generateUser(generateUserDto: GenerateUserDto, accessToken: string) {
-    let generateMomoirRepositoryResult: AxiosResponse;
+    let generateMemoirRepositoryResult: AxiosResponse;
 
     const headers = {
       Accept: 'application/vnd.github+json',
@@ -117,7 +117,7 @@ export class UserService {
     };
 
     try {
-      generateMomoirRepositoryResult = await firstValueFrom(
+      generateMemoirRepositoryResult = await firstValueFrom(
         this.httpService.post(`https://api.github.com/user/repos`, body, {
           headers,
         }),

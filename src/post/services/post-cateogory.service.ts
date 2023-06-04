@@ -6,7 +6,7 @@ import {
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
-import constants from '../post.constatnts';
+import constants from '../post.constants';
 
 import { PostCategoryRepository } from '../repositories/post-category.repository';
 

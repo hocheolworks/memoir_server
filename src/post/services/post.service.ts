@@ -18,9 +18,10 @@ import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { Post } from '../entities/post.entity';
-import constants from '../post.constatnts';
+import constants from '../post.constants';
 import { PostCategoryRepository } from '../repositories/post-category.repository';
 import { PostRepository } from '../repositories/post.repository';
+import { PostCategory } from '../entities/post-category.entity';
 
 @Injectable()
 export class PostService {
@@ -36,7 +37,7 @@ export class PostService {
     const userInfo = generatePostDto.user;
     const headers = {
       Accept: 'application/vnd.github+json',
-      Authorization: userInfo.accesstoken,
+      Authorization: userInfo.accessToken,
     };
 
     const beforeEncodingPostBody = generatePostDto.postBody;
@@ -87,12 +88,18 @@ export class PostService {
       generatePostDto.sha = sha;
 
       const findPostCategoryDto = new FindPostCategoryDto();
-      findPostCategoryDto.parentCategory = generatePostDto.parentCateogry;
+      findPostCategoryDto.parentCategory = generatePostDto.parentCategory;
       findPostCategoryDto.childCategory = generatePostDto.childCategory;
       findPostCategoryDto.user = generatePostDto.user;
 
-      const postCategoryConflictCheck =
-        await this.postCategoryRepository.findPostCategory(findPostCategoryDto);
+      let postCategoryConflictCheck: PostCategory;
+
+      try {
+        postCategoryConflictCheck =
+          await this.postCategoryRepository.findPostCategory(
+            findPostCategoryDto,
+          );
+      } catch (e) {}
 
       let post: Post;
 
@@ -103,7 +110,7 @@ export class PostService {
         );
       } else {
         const generatePostCategoryDto = new GeneratePostCategoryDto();
-        generatePostCategoryDto.parentCategory = generatePostDto.parentCateogry;
+        generatePostCategoryDto.parentCategory = generatePostDto.parentCategory;
         generatePostCategoryDto.childCategory = generatePostDto.childCategory;
         generatePostCategoryDto.user = generatePostDto.user;
 
@@ -117,8 +124,6 @@ export class PostService {
           { ...generatePostDto, postCategory },
           queryRunner.manager,
         );
-
-        return post;
       }
 
       await queryRunner.commitTransaction();
@@ -202,10 +207,10 @@ export class PostService {
     const encodedContent = Buffer.from(content, 'base64').toString();
     post['postBody'] = encodedContent;
 
-    const modiftyPostDto = new ModifyPostDto();
-    modiftyPostDto.views = Number(post.views + 1);
+    const modifyPostDto = new ModifyPostDto();
+    modifyPostDto.views = Number(post.views + 1);
 
-    await this.postRepository.updatePostById(id, modiftyPostDto);
+    await this.postRepository.updatePostById(id, modifyPostDto);
 
     return post;
   }
@@ -230,7 +235,7 @@ export class PostService {
 
     const headers = {
       Accept: 'application/vnd.github+json',
-      Authorization: userInfo.accesstoken,
+      Authorization: userInfo.accessToken,
     };
 
     const beforeEncodingPostBody = modifyPostDto.postBody;

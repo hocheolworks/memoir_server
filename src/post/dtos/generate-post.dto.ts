@@ -19,7 +19,7 @@ export class GeneratePostDto extends PickType(PostDto, [
     description: '게시글의 대분류',
     required: false,
   })
-  parentCateogry?: string;
+  parentCategory?: string;
 
   @ApiProperty({
     example: 'nestjs',

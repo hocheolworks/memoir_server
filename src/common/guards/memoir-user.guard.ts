@@ -63,7 +63,7 @@ export class MemoirUserGuard implements CanActivate {
     } catch (error) {
       throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
     }
-    memoirUser.accesstoken = request.headers.authorization;
+    memoirUser.accessToken = request.headers.authorization;
 
     request['userInfo'] = { ...userInfo, ...memoirUser };
 

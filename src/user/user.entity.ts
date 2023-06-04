@@ -45,5 +45,5 @@ export class User extends CoreEntity {
   })
   email: string;
 
-  accesstoken?: string;
+  accessToken?: string;
 }

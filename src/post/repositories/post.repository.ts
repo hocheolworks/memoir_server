@@ -26,7 +26,6 @@ export class PostRepository {
 
     if (transactionManager) {
       createPostResult = transactionManager.create(Post, generatePostDto);
-      console.log(createPostResult);
       return await transactionManager.save(createPostResult);
     } else {
       createPostResult = this.postRepository.create(generatePostDto);

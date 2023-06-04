@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { User } from 'src/user/user.entity';
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
-import constants from '../post.constatnts';
 import { IsNotEmpty, MaxLength } from 'class-validator';
 import { PostCategory } from './post-category.entity';
 
@@ -68,11 +67,6 @@ export class Post extends CoreEntity {
   })
   sha?: string;
 
-  @ApiProperty({
-    type: () => PostCategory,
-    description: '게시글 분류 테이블 id',
-    required: false,
-  })
   @ManyToOne(() => PostCategory, (postCategory) => postCategory.id, {
     nullable: true,
   })

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
-import constants from '../post.constatnts';
+import constants from '../post.constants';
 import { IsNotEmpty, MaxLength } from 'class-validator';
 import { User } from 'src/user/user.entity';
 import { Expose } from 'class-transformer';
@@ -16,11 +16,6 @@ import { Expose } from 'class-transformer';
   },
 )
 export class PostCategory extends CoreEntity {
-  @ApiProperty({
-    description: '유저 객체',
-    type: () => User,
-    required: false,
-  })
   @ManyToOne(() => User, (user) => user.id, { nullable: true, eager: true })
   @JoinColumn()
   @IsNotEmpty()
