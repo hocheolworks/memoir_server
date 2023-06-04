@@ -46,7 +46,7 @@ jobs:
     runs-on: [self-hosted, Linux, x64]
     steps:
       - name: rm legacy envfile
-        run: rm -rf ./.envs/.env.production
+        run: rm -rf ./memoir_server/.envs/.env.production
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v1
         with:
@@ -61,7 +61,7 @@ jobs:
           envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
           envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
           file_name: .env.production
-          directory: ./.envs
+          directory: ./memoir_server/.envs
       - name: ENV test
         run: cat .envs/.env.production
       - name: User add for docker Login
