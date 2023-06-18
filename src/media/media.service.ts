@@ -20,19 +20,21 @@ export class MediaService {
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: String(folder + fileName),
-      Body: image,
+      Body: image.buffer,
       ContentType: image.mimetype,
     };
 
-    return new Promise((resolve, reject) => {
+    const uploadResult: any = await new Promise((resolve, reject) => {
       s3.upload(params, (err: { message: any }, data: unknown) => {
         if (err) {
-          console.log(err);
           reject(err.message);
         }
-        console.log(data);
         resolve(data);
       });
     });
+
+    const cdnUrl = process.env.CDN_URL;
+
+    return { cdnUrl, path: uploadResult.Key };
   }
 }

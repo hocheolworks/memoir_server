@@ -26,7 +26,7 @@ import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 
 @ApiTags('PostCategories')
 @Controller('post-categories')
-export class PostCateogoryController {
+export class PostCategoryController {
   constructor(private readonly postCategoryService: PostCategoryService) {}
 
   @ApiOperation({

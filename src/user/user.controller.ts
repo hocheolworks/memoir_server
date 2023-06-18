@@ -27,20 +27,6 @@ import { UserDto } from './dtos/user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('')
-  async test(@Res() res) {
-    res.sendFile('index.html', {
-      root: 'public',
-    });
-  }
-
-  @Get('/login/done')
-  async test2(@Res() res) {
-    res.sendFile('test.html', {
-      root: 'public',
-    });
-  }
-
   @ApiOperation({
     summary: '깃허브 회원가입 및 메모아 레포지토리 생성',
   })

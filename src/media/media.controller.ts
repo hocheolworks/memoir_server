@@ -2,15 +2,20 @@ import {
   Body,
   Controller,
   Post,
-  UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadImageDto } from './dtos/upload-image.dto';
+import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
+import constants from 'src/common/common.constants';
 
+@ApiTags('Media')
+@ApiBearerAuth(constants.props.BearerToken)
+@UseGuards(MemoirUserGuard)
 @Controller('media')
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}

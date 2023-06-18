@@ -5,7 +5,7 @@ export class UploadImageDto {
   images: any[];
 
   @ApiProperty({
-    example: 'profile/',
+    example: 'bliss/images',
     description: '폴더 명',
     required: true,
   })
