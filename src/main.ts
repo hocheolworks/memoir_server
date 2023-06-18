@@ -15,7 +15,6 @@ async function bootstrap() {
     logger: WinstonLogger,
   });
 
-  app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalInterceptors(new TransformInterceptor());
 
