@@ -93,8 +93,9 @@ export class UserController {
   @UseGuards(MemoirUserGuard)
   @Get('/me')
   async findUserInfoByToken(@GetUserInfo() userInfo: UserInfoDto) {
-    const memoirGithubUserInfo =
-      await this.userService.findUserByGithubUserName(userInfo.githubUserName);
+    const memoirGithubUserInfo = await this.userService.findUser({
+      githubUserName: userInfo.githubUserName,
+    });
     memoirGithubUserInfo['profileImage'] = userInfo.profileImage;
     memoirGithubUserInfo['description'] = userInfo.description;
 

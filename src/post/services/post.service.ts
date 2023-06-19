@@ -16,12 +16,12 @@ import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { GeneratePostDto } from '../dtos/generate-post.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
-import { UpdatePostDto } from '../dtos/update-post.dto';
 import { Post } from '../entities/post.entity';
 import constants from '../post.constants';
 import { PostCategoryRepository } from '../repositories/post-category.repository';
 import { PostRepository } from '../repositories/post.repository';
 import { PostCategory } from '../entities/post-category.entity';
+import { FindPostListDto } from '../dtos/find-post-list.dto';
 
 @Injectable()
 export class PostService {
@@ -160,18 +160,21 @@ export class PostService {
     }
   }
 
-  async findPostsByUserId(userId: number) {
-    return await this.postRepository.findPostsByUserId(userId);
+  async findPostsByUserId(findPostListDto: FindPostListDto) {
+    return await this.postRepository.findPosts(findPostListDto);
   }
 
   async findPostListOrderByViews(page: number, pageSize: number) {
     return await this.postRepository.findPostListOrderByViews(page, pageSize);
   }
 
-  async findPostsByGithubUserId(githubUserId: string) {
-    const user = await this.userService.findUserByGithubUserName(githubUserId);
+  async findPosts(findPostListDto: FindPostListDto) {
+    const user = await this.userService.findUser({
+      githubUserName: findPostListDto.githubUserName,
+    });
+    findPostListDto.userId = user.id;
 
-    return await this.postRepository.findPostsByUserId(user.id);
+    return await this.postRepository.findPosts(findPostListDto);
   }
 
   async findPostById(id: number) {

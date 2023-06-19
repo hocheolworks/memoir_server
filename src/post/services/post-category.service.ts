@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -7,7 +8,6 @@ import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import constants from '../post.constants';
-
 import { PostCategoryRepository } from '../repositories/post-category.repository';
 
 @Injectable()
@@ -77,6 +77,20 @@ export class PostCategoryService {
       );
     }
 
-    return await this.postCategoryRepository.deletePostCategory(id);
+    try {
+      await this.postCategoryRepository.deletePostCategory(id);
+    } catch (e) {
+      if (e.code === '23503') {
+        throw new BadRequestException(
+          constants.errorMessages.REFERENCED_CATEGORY,
+        );
+      } else {
+        throw new BadRequestException(
+          constants.errorMessages.FAIL_TO_DELETE_CATEGORY,
+        );
+      }
+    }
+
+    return;
   }
 }

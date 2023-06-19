@@ -10,6 +10,7 @@ import { EntityManager, Repository, UpdateResult } from 'typeorm';
 import { GeneratePostDto } from '../dtos/generate-post.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
 import { Post } from '../entities/post.entity';
+import { FindPostListDto } from '../dtos/find-post-list.dto';
 
 @Injectable()
 export class PostRepository {
@@ -33,37 +34,59 @@ export class PostRepository {
     }
   }
 
-  async findPostsByUserId(userId: number) {
-    const posts = await this.postRepository
+  async findPosts(findPostListDto: FindPostListDto) {
+    const { userId, parentCategory, childCategory } = findPostListDto;
+
+    const query = this.postRepository
       .createQueryBuilder('p')
-      .where('p.userId = :userId', { userId: userId })
       .leftJoin('p.postCategory', 'pc')
       .addSelect(['pc.id', 'pc.parentCategory', 'pc.childCategory'])
-      .getMany();
+      .leftJoinAndSelect('p.user', 'user');
 
-    return posts;
-  }
+    if (userId) {
+      query.andWhere('p.userId = :userId', { userId });
+    }
 
-  async findPostListOrderByViews(page: number, pageSize: number) {
-    const posts = await this.postRepository
-      .createQueryBuilder('p')
-      .select()
-      .orderBy('p.views', 'DESC')
-      .skip(pageSize * (page - 1))
-      .take(pageSize)
-      .getMany();
+    if (parentCategory) {
+      query.andWhere('pc.parentCategory = :parentCategory', { parentCategory });
+    }
 
-    if (!posts) {
+    if (childCategory) {
+      query.andWhere('pc.childCategory = :childCategory', { childCategory });
+    }
+
+    const [list, count] = await query.getManyAndCount();
+
+    if (list.length === 0) {
       throw new NotFoundException(constants.errorMessages.POST_NOT_FOUND);
     }
 
-    return posts;
+    return { list, count };
+  }
+
+  async findPostListOrderByViews(page: number, pageSize: number) {
+    const [list, count] = await this.postRepository
+      .createQueryBuilder('p')
+      .leftJoin('p.postCategory', 'pc')
+      .addSelect(['pc.id', 'pc.parentCategory', 'pc.childCategory'])
+      .leftJoinAndSelect('p.user', 'user')
+      .orderBy('p.views', 'DESC')
+      .skip(pageSize * (page - 1))
+      .take(pageSize)
+      .getManyAndCount();
+
+    if (list.length === 0) {
+      throw new NotFoundException(constants.errorMessages.POST_NOT_FOUND);
+    }
+
+    return { list, count };
   }
 
   async findPostById(id: number) {
     const post = await this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
+      .leftJoinAndSelect('p.postCategory', 'pc')
       .where('p.id = :id', { id })
       .getOne();
 
@@ -94,31 +117,4 @@ export class PostRepository {
   async deletePostById(id: number) {
     return await this.postRepository.delete({ id });
   }
-
-  //   async createUser(generateUserDto: Gene) {
-  //     const checkDuplicte = await this.findUserByGithubUserName(
-  //       generateUserDto.githubUserName,
-  //     );
-
-  //     if (checkDuplicte) {
-  //       throw new ConflictException(constants.errorMessages.USER_ALREADY_EXISTS);
-  //     }
-
-  //     const inserUserResult = await this.userRepository.insert(generateUserDto);
-  //     const user = await this.findUserById(inserUserResult.identifiers[0].id);
-
-  //     return user;
-  //   }
-
-  //   async findUserByGithubUserName(githubUserName: string): Promise<User> {
-  //     return this.userRepository.findOne({
-  //       where: { githubUserName: githubUserName },
-  //     });
-  //   }
-
-  //   async findUserById(id: number): Promise<User> {
-  //     return this.userRepository.findOne({
-  //       where: { id: id },
-  //     });
-  //   }
 }

@@ -21,8 +21,6 @@ import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
 import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
-import { ResponseFindPostListDto } from '../dtos/response-dto/response-find-post-list.dto';
-import { ResponseFindPostDto } from '../dtos/response-dto/response-find-post.dto';
 import { FindPostListDto } from '../dtos/find-post-list.dto';
 
 @ApiTags('Post')
@@ -55,34 +53,14 @@ export class PostController {
   })
   @SuccessResponse(HttpStatus.OK, [
     {
-      model: ResponseFindPostListDto,
+      model: PostDto,
       exampleTitle: '요청 성공 응답',
       isArrayResponse: true,
     },
   ])
   @Get()
   findPosts(@Query() findPostListDto: FindPostListDto) {
-    return this.postService.findPostsByGithubUserId(
-      findPostListDto.githubUserName,
-    );
-  }
-
-  @ApiOperation({
-    summary: '내 게시물 리스트를 불러옵니다.',
-  })
-  @SuccessResponse(HttpStatus.OK, [
-    {
-      model: ResponseFindPostListDto,
-      exampleTitle: '요청 성공 응답',
-      isArrayResponse: true,
-    },
-  ])
-  @ApiBearerAuth(constants.props.BearerToken)
-  @UseGuards(MemoirUserGuard)
-  @Get('me')
-  findPostsByToken(@GetUserInfo() userInfo: UserInfoDto) {
-    const userId = userInfo.id;
-    return this.postService.findPostsByUserId(userId);
+    return this.postService.findPosts(findPostListDto);
   }
 
   @ApiOperation({
@@ -90,7 +68,7 @@ export class PostController {
   })
   @SuccessResponse(HttpStatus.OK, [
     {
-      model: ResponseFindPostDto,
+      model: PostDto,
       exampleTitle: '요청 성공 응답',
       isArrayResponse: false,
     },
@@ -108,7 +86,7 @@ export class PostController {
   })
   @SuccessResponse(HttpStatus.OK, [
     {
-      model: ResponseFindPostDto,
+      model: PostDto,
       exampleTitle: '요청 성공 응답',
       isArrayResponse: false,
     },

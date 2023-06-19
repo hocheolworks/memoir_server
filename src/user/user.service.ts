@@ -12,6 +12,7 @@ import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto'
 import { UserRepository } from './user.repository';
 import { GenerateUserDto } from './dtos/generate-user.dto';
 import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
+import { FindUserDto } from './dtos/find-user.dto';
 
 @Injectable()
 export class UserService {
@@ -91,9 +92,9 @@ export class UserService {
     userInfo.isMemoirUser = false;
     userInfo.accessToken = accessToken;
 
-    const memoirUser = await this.userRepository.findUserByGithubUserName(
-      userInfo.githubUserName,
-    );
+    const memoirUser = await this.userRepository.findUser({
+      githubUserName: userInfo.githubUserName,
+    });
 
     if (memoirUser) {
       userInfo.isMemoirUser = true;
@@ -133,10 +134,8 @@ export class UserService {
     return await this.userRepository.createUser(generateUserDto);
   }
 
-  async findUserByGithubUserName(githubUserName: string) {
-    const memoirUser = await this.userRepository.findUserByGithubUserName(
-      githubUserName,
-    );
+  async findUser(findUserDto: FindUserDto) {
+    const memoirUser = await this.userRepository.findUser(findUserDto);
 
     if (!memoirUser) {
       throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);

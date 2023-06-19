@@ -15,6 +15,7 @@ export class Post extends CoreEntity {
   @ManyToOne(() => User, (user) => user.id, { nullable: false, eager: true })
   @JoinColumn()
   @IsNotEmpty()
+  @Index()
   user: User;
 
   @ApiProperty({
@@ -30,7 +31,22 @@ export class Post extends CoreEntity {
   })
   @IsNotEmpty()
   @MaxLength(50)
+  @Index()
   postTitle: string;
+
+  @ApiProperty({
+    example: 'sample.image.com',
+    description: '게시글 썸네일 이미지',
+    required: false,
+  })
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    length: 300,
+    comment: '게시글 썸네일 이미지 URL',
+  })
+  @MaxLength(300)
+  postThumbnailImageUrl: string;
 
   @ApiProperty({
     example:

@@ -11,6 +11,8 @@ const constants = {
     FAIL_TO_READ_POST_FROM_GITHUB:
       '깃허브에서 게시글을 불러오는데 실패했습니다.',
     DUPLICATED_POST_CATEGORY: '이미 존재하는 카테고리입니다.',
+    REFERENCED_CATEGORY: '게시글이 포함된 카테고리는 삭제가 불가능합니다.',
+    FAIL_TO_DELETE_CATEGORY: '게시글 삭제에 실패했습니다.',
   },
   props: {
     USER_IDX: 'user_index',

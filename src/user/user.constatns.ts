@@ -11,6 +11,7 @@ const constants = {
   props: {
     REPO: 'repo',
     UNIQUE_USER_EMAIL: 'uniqueUserEmail',
+    UNIQUE_USER_NAME: 'uniqueGithubUserName',
     REPOSITORY_DESCRIPTION: `Memoir's Repository, It's the place where my memoirs are stored.`,
   },
 };

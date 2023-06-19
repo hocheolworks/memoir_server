@@ -1,9 +1,14 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import constants from 'src/common/common.constants';
 import { Repository } from 'typeorm';
 import { GenerateUserDto } from './dtos/generate-user.dto';
 import { User } from './user.entity';
+import { FindUserDto } from './dtos/find-user.dto';
 
 @Injectable()
 export class UserRepository {
@@ -13,29 +18,45 @@ export class UserRepository {
   ) {}
 
   async createUser(generateUserDto: GenerateUserDto) {
-    const checkDuplicte = await this.findUserByGithubUserName(
-      generateUserDto.githubUserName,
-    );
+    const checkDuplicate = await this.findUser({
+      githubUserName: generateUserDto.githubUserName,
+    });
 
-    if (checkDuplicte) {
+    if (checkDuplicate) {
       throw new ConflictException(constants.errorMessages.USER_ALREADY_EXISTS);
     }
 
-    const inserUserResult = await this.usersRepository.insert(generateUserDto);
-    const user = await this.findUserById(inserUserResult.identifiers[0].id);
+    const insertUserResult = await this.usersRepository.insert(generateUserDto);
+    const user = await this.findUser({
+      id: insertUserResult.identifiers[0].id,
+    });
 
     return user;
   }
 
-  async findUserByGithubUserName(githubUserName: string): Promise<User> {
-    return this.usersRepository.findOne({
-      where: { githubUserName: githubUserName },
-    });
-  }
+  async findUser(findUserDto: FindUserDto) {
+    const { id, githubUserName } = findUserDto;
 
-  async findUserById(id: number): Promise<User> {
-    return this.usersRepository.findOne({
-      where: { id: id },
-    });
+    if (!id && !githubUserName) {
+      throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
+    }
+
+    const query = this.usersRepository.createQueryBuilder('u');
+
+    if (id) {
+      query.andWhere('u.id = :id', { id });
+    }
+
+    if (githubUserName) {
+      query.andWhere('u.githubUserName = :githubUserName', { githubUserName });
+    }
+
+    const user = await query.getOne();
+
+    if (!user) {
+      throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
+    }
+
+    return user;
   }
 }

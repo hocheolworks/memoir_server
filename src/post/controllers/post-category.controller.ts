@@ -17,12 +17,12 @@ import { MemoirUserGuard } from 'src/common/guards/memoir-user.guard';
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import { PostCategoryDto } from '../dtos/post-category.dto';
-import { PostCategoryService } from '../services/post-cateogory.service';
 import constants from 'src/common/common.constants';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
 import { userInfo, UserInfo } from 'os';
 import { User } from 'src/user/user.entity';
 import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
+import { PostCategoryService } from '../services/post-category.service';
 
 @ApiTags('PostCategories')
 @Controller('post-categories')
@@ -91,7 +91,7 @@ export class PostCategoryController {
   }
 
   @ApiOperation({
-    summary: '게시글 카테고리를 수정합니다.',
+    summary: '게시글 카테고리를 삭제합니다.',
   })
   @HttpCode(204)
   @ApiBearerAuth(constants.props.BearerToken)

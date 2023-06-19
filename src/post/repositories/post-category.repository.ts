@@ -95,36 +95,23 @@ export class PostCategoryRepository {
   }
 
   async findPostCategoryList(findPostCategoryDto: FindPostCategoryDto) {
-    const postCategoryQuery = this.postCategoryRepository
+    const query = this.postCategoryRepository
       .createQueryBuilder('pc')
-      .where('1=1');
-
-    if (findPostCategoryDto.parentCategory) {
-      postCategoryQuery.andWhere('pc.parentCategory = :parentCategory', {
-        parentCategory: findPostCategoryDto.parentCategory,
-      });
-    }
-
-    if (findPostCategoryDto.childCategory) {
-      postCategoryQuery.andWhere('pc.childCategory = :childCategory', {
-        childCategory: findPostCategoryDto.childCategory,
-      });
-    }
-
-    if (findPostCategoryDto.user) {
-      postCategoryQuery.andWhere('pc.userId = :userId', {
-        userId: findPostCategoryDto.user.id,
-      });
-    }
+      .leftJoinAndSelect('pc.user', 'u');
 
     if (findPostCategoryDto.userId) {
-      postCategoryQuery.andWhere('pc.user.id = :userId', {
+      query.andWhere('u.id = :userId', {
         userId: findPostCategoryDto.userId,
       });
     }
 
-    const [postCategoryList, length] =
-      await postCategoryQuery.getManyAndCount();
+    if (findPostCategoryDto.githubUserName) {
+      query.andWhere('u.githubUserName = :githubUserName', {
+        githubUserName: findPostCategoryDto.githubUserName,
+      });
+    }
+
+    const [postCategoryList, length] = await query.getManyAndCount();
 
     if (length === 0) {
       throw new NotFoundException(
@@ -166,9 +153,9 @@ export class PostCategoryRepository {
     let deleteResult: DeleteResult;
 
     if (transactionManager) {
-      deleteResult = await transactionManager.softDelete(PostCategory, { id });
+      deleteResult = await transactionManager.delete(PostCategory, { id });
     } else {
-      deleteResult = await this.postCategoryRepository.softDelete({ id });
+      deleteResult = await this.postCategoryRepository.delete({ id });
     }
 
     if (!deleteResult || deleteResult.affected === 0) {

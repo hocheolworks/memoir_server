@@ -32,6 +32,7 @@ export class PostCategory extends CoreEntity {
     length: 200,
     comment: '게시글 대분류',
   })
+  @Index()
   @MaxLength(20)
   parentCategory: string;
 
@@ -46,6 +47,7 @@ export class PostCategory extends CoreEntity {
     length: 200,
     comment: '게시글 소분류',
   })
+  @Index()
   @MaxLength(20)
   childCategory: string;
 }

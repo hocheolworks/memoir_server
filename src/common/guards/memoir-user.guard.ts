@@ -57,9 +57,9 @@ export class MemoirUserGuard implements CanActivate {
 
     let memoirUser: User;
     try {
-      memoirUser = await this.userService.findUserByGithubUserName(
-        userInfo.githubUserName,
-      );
+      memoirUser = await this.userService.findUser({
+        githubUserName: userInfo.githubUserName,
+      });
     } catch (error) {
       throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
     }

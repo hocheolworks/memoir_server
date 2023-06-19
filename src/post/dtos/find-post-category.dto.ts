@@ -1,18 +1,17 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 import { User } from 'src/user/user.entity';
-import { PostCategory } from '../entities/post-category.entity';
 
-export class FindPostCategoryDto extends PickType(PartialType(PostCategory), [
-  'childCategory',
-  'parentCategory',
-  'id',
-]) {
+export class FindPostCategoryDto {
   @ApiProperty({
-    required: false,
-    description: '유저 테이블 id',
-    example: 1,
+    example: 'Bliss96',
+    description: '깃허브 사용자 명',
   })
-  userId?: number;
+  @IsNotEmpty()
+  githubUserName?: string;
 
+  userId?: number;
+  parentCategory: string;
+  childCategory: string;
   user?: User;
 }

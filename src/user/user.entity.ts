@@ -8,6 +8,10 @@ import constants from './user.constatns';
   unique: true,
   where: '"deletedAt" is null',
 })
+@Index(constants.props.UNIQUE_USER_NAME, ['githubUserName'], {
+  unique: true,
+  where: '"deletedAt" is null',
+})
 export class User extends CoreEntity {
   @ApiProperty({
     example: 'JeongCheolLee',
