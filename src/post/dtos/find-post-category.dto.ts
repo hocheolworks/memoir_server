@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { User } from 'src/user/user.entity';
 
@@ -11,7 +11,7 @@ export class FindPostCategoryDto {
   githubUserName?: string;
 
   userId?: number;
-  parentCategory: string;
-  childCategory: string;
+  parentCategory?: string;
+  childCategory?: string;
   user?: User;
 }

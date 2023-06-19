@@ -88,7 +88,9 @@ export class PostCategoryRepository {
     const postCategory = await postCategoryQuery.getOne();
 
     if (!postCategory) {
-      throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
+      throw new NotFoundException(
+        constants.errorMessages.POST_CATEGORY_NOT_FOUND,
+      );
     }
 
     return postCategory;

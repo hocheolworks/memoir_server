@@ -17,11 +17,15 @@ export class PostCategoryService {
   ) {}
 
   async generatePostCategory(generatePostCategoryDto: GeneratePostCategoryDto) {
-    const checkConflictPostCategory = await this.findPostCategory({
-      userId: generatePostCategoryDto.user.id,
-      parentCategory: generatePostCategoryDto.parentCategory,
-      childCategory: generatePostCategoryDto.childCategory,
-    });
+    let checkConflictPostCategory;
+    try {
+      checkConflictPostCategory =
+        await this.postCategoryRepository.findPostCategory({
+          userId: generatePostCategoryDto.user.id,
+          parentCategory: generatePostCategoryDto.parentCategory,
+          childCategory: generatePostCategoryDto.childCategory,
+        });
+    } catch (e) {}
 
     if (checkConflictPostCategory) {
       throw new ConflictException(
@@ -40,9 +44,21 @@ export class PostCategoryService {
   }
 
   async findPostCategoryList(findPostCategoryDto: FindPostCategoryDto) {
-    return await this.postCategoryRepository.findPostCategoryList(
-      findPostCategoryDto,
-    );
+    const postCategoryList =
+      await this.postCategoryRepository.findPostCategoryList(
+        findPostCategoryDto,
+      );
+
+    let response = {};
+    for (const postCategory of postCategoryList) {
+      if (postCategory.parentCategory in Object.keys(response)) {
+        response[postCategory.parentCategory].push(postCategory.childCategory);
+      } else {
+        response[postCategory.parentCategory] = [postCategory.childCategory];
+      }
+    }
+
+    return response;
   }
 
   async modifyPostCategoryById(
@@ -50,6 +66,46 @@ export class PostCategoryService {
     id: number,
     modifyPostCategoryDto: ModifyPostCategoryDto,
   ) {
+    let conflictCheck;
+    if (
+      modifyPostCategoryDto.parentCategory &&
+      modifyPostCategoryDto.childCategory
+    ) {
+      try {
+        conflictCheck = await this.postCategoryRepository.findPostCategory({
+          userId: userId,
+          parentCategory: modifyPostCategoryDto.parentCategory,
+          childCategory: modifyPostCategoryDto.childCategory,
+        });
+      } catch (e) {}
+    } else if (
+      modifyPostCategoryDto.parentCategory &&
+      !modifyPostCategoryDto.childCategory
+    ) {
+      try {
+        conflictCheck = await this.postCategoryRepository.findPostCategory({
+          userId: userId,
+          parentCategory: modifyPostCategoryDto.parentCategory,
+        });
+      } catch (e) {}
+    } else if (
+      !modifyPostCategoryDto.parentCategory &&
+      modifyPostCategoryDto.childCategory
+    ) {
+      try {
+        conflictCheck = await this.postCategoryRepository.findPostCategory({
+          userId: userId,
+          childCategory: modifyPostCategoryDto.childCategory,
+        });
+      } catch (e) {}
+    }
+
+    if (conflictCheck) {
+      throw new ConflictException(
+        constants.errorMessages.DUPLICATED_POST_CATEGORY,
+      );
+    }
+
     const postCategory = await this.postCategoryRepository.findPostCategoryById(
       id,
     );
