@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Entity, Column, Index } from 'typeorm';
-import constants from './user.constatns';
+import constants from './user.constants';
+import { Length } from 'class-validator';
 
 @Entity({ name: 'User', schema: process.env.DB_SCHEMA_NAME })
 @Index(constants.props.UNIQUE_USER_EMAIL, ['email'], {
@@ -48,6 +49,19 @@ export class User extends CoreEntity {
     comment: '이메일',
   })
   email: string;
+
+  @ApiProperty({
+    example: '개고수 블리스의 블로그',
+    description: '블로그 소개글',
+  })
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    length: 1000,
+    comment: '블로그 소개 글',
+  })
+  @Length(1, 1000)
+  blogIntroduction: string;
 
   accessToken?: string;
 }

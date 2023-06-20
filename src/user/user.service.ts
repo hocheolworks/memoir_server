@@ -7,7 +7,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { GenerateGithubAccessTokenDto } from './dtos/generate-github-access-token.dto';
 import { AxiosResponse } from 'axios';
-import constants from './user.constatns';
+import constants from './user.constants';
 import { FindGithubUserResponseDto } from './dtos/find-github-user-response.dto';
 import { UserRepository } from './user.repository';
 import { GenerateUserDto } from './dtos/generate-user.dto';
@@ -132,6 +132,30 @@ export class UserService {
     }
 
     return await this.userRepository.createUser(generateUserDto);
+  }
+
+  async findGithubUser(githubUserName: string) {
+    let githubUserInfo: AxiosResponse;
+
+    const headers = {
+      Accept: 'application/vnd.github+json',
+    };
+
+    try {
+      githubUserInfo = await firstValueFrom(
+        this.httpService.get(`https://api.github.com/users/${githubUserName}`, {
+          headers,
+        }),
+      );
+    } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
+      throw new BadRequestException(
+        constants.errorMessages.GET_GITHUB_USER_INFO_FAILED,
+      );
+    }
+
+    return githubUserInfo.data;
   }
 
   async findUser(findUserDto: FindUserDto) {

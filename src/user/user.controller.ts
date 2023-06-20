@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -78,6 +79,31 @@ export class UserController {
       statusCode: 201,
       data: generateResult,
     });
+  }
+
+  @ApiOperation({
+    summary: '유저 정보를 검색합니다.',
+  })
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: UserInfoDto,
+      exampleTitle: '요청 성공 응답',
+    },
+  ])
+  @Get('')
+  async findUserInfo(@Query('githubUserName') githubUserName: string) {
+    const githubUserInfo = await this.userService.findGithubUser(
+      githubUserName,
+    );
+
+    const memoirGithubUserInfo = await this.userService.findUser({
+      githubUserName: githubUserName,
+    });
+
+    memoirGithubUserInfo['profileImage'] = githubUserInfo.avatar_url;
+    memoirGithubUserInfo['description'] = githubUserInfo.bio;
+
+    return memoirGithubUserInfo;
   }
 
   @ApiOperation({
