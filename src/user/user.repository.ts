@@ -34,7 +34,7 @@ export class UserRepository {
     return user;
   }
 
-  async findUser(findUserDto: FindUserDto) {
+  async findUser(findUserDto: FindUserDto, isThrow?: boolean) {
     const { id, githubUserName } = findUserDto;
 
     if (!id && !githubUserName) {
@@ -53,7 +53,7 @@ export class UserRepository {
 
     const user = await query.getOne();
 
-    if (!user) {
+    if (isThrow && !user) {
       throw new NotFoundException(constants.errorMessages.USER_NOT_FOUND);
     }
 

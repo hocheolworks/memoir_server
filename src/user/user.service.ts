@@ -92,9 +92,12 @@ export class UserService {
     userInfo.isMemoirUser = false;
     userInfo.accessToken = accessToken;
 
-    const memoirUser = await this.userRepository.findUser({
-      githubUserName: userInfo.githubUserName,
-    });
+    const memoirUser = await this.userRepository.findUser(
+      {
+        githubUserName: userInfo.githubUserName,
+      },
+      false,
+    );
 
     if (memoirUser) {
       userInfo.isMemoirUser = true;
