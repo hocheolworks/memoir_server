@@ -9,6 +9,7 @@ import constants from './common/common.constants';
 import { WinstonLogger } from './common/helpers/winstonLogger';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/response-transform.interceptor';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -37,8 +38,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document, swaggerCustomOptions);
 
-  await app.listen(process.env.PORT || 3000, '0.0.0.0');
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
 
-  app.setGlobalPrefix('api');
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

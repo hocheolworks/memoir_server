@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
@@ -9,6 +10,7 @@ import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import constants from '../post.constants';
 import { PostCategoryRepository } from '../repositories/post-category.repository';
+import { PostCategory } from '../entities/post-category.entity';
 
 @Injectable()
 export class PostCategoryService {
@@ -22,8 +24,8 @@ export class PostCategoryService {
       checkConflictPostCategory =
         await this.postCategoryRepository.findPostCategory({
           userId: generatePostCategoryDto.user.id,
-          parentCategory: generatePostCategoryDto.parentCategory,
-          childCategory: generatePostCategoryDto.childCategory,
+          parentCategoryId: generatePostCategoryDto.parentCategoryId,
+          categoryName: generatePostCategoryDto.categoryName,
         });
     } catch (e) {}
 
@@ -32,6 +34,28 @@ export class PostCategoryService {
         constants.errorMessages.DUPLICATED_POST_CATEGORY,
       );
     }
+
+    let parentCategory: PostCategory;
+    if (generatePostCategoryDto.parentCategoryId) {
+      try {
+        parentCategory = await this.postCategoryRepository.findPostCategoryById(
+          generatePostCategoryDto.parentCategoryId,
+        );
+      } catch (e) {
+        if (e.status === 404) {
+          throw new NotFoundException(
+            constants.errorMessages.NOT_FOUND_PARENT_POST_CATEGORY,
+          );
+        }
+
+        throw new BadRequestException(
+          constants.errorMessages.FAIL_TO_CREATE_POST_CATEGORY,
+        );
+      }
+
+      generatePostCategoryDto.parentCategory = parentCategory;
+    }
+
     return await this.postCategoryRepository.createPostCategory(
       generatePostCategoryDto,
     );
@@ -49,16 +73,7 @@ export class PostCategoryService {
         findPostCategoryDto,
       );
 
-    let response = {};
-    for (const postCategory of postCategoryList) {
-      if (postCategory.parentCategory in Object.keys(response)) {
-        response[postCategory.parentCategory].push(postCategory.childCategory);
-      } else {
-        response[postCategory.parentCategory] = [postCategory.childCategory];
-      }
-    }
-
-    return response;
+    return postCategoryList;
   }
 
   async modifyPostCategoryById(
@@ -66,36 +81,42 @@ export class PostCategoryService {
     id: number,
     modifyPostCategoryDto: ModifyPostCategoryDto,
   ) {
+    const postCategory = await this.postCategoryRepository.findPostCategoryById(
+      id,
+    );
+
     let conflictCheck;
     if (
-      modifyPostCategoryDto.parentCategory &&
-      modifyPostCategoryDto.childCategory
+      modifyPostCategoryDto.parentCategoryId &&
+      modifyPostCategoryDto.categoryName
     ) {
       try {
         conflictCheck = await this.postCategoryRepository.findPostCategory({
           userId: userId,
-          parentCategory: modifyPostCategoryDto.parentCategory,
-          childCategory: modifyPostCategoryDto.childCategory,
+          parentCategoryId: modifyPostCategoryDto.parentCategoryId,
+          categoryName: modifyPostCategoryDto.categoryName,
         });
       } catch (e) {}
     } else if (
-      modifyPostCategoryDto.parentCategory &&
-      !modifyPostCategoryDto.childCategory
+      modifyPostCategoryDto.parentCategoryId &&
+      !modifyPostCategoryDto.categoryName
     ) {
       try {
         conflictCheck = await this.postCategoryRepository.findPostCategory({
           userId: userId,
-          parentCategory: modifyPostCategoryDto.parentCategory,
+          parentCategoryId: modifyPostCategoryDto.parentCategoryId,
+          categoryName: postCategory.categoryName,
         });
       } catch (e) {}
     } else if (
-      !modifyPostCategoryDto.parentCategory &&
-      modifyPostCategoryDto.childCategory
+      !modifyPostCategoryDto.parentCategoryId &&
+      modifyPostCategoryDto.categoryName
     ) {
       try {
         conflictCheck = await this.postCategoryRepository.findPostCategory({
           userId: userId,
-          childCategory: modifyPostCategoryDto.childCategory,
+          categoryName: modifyPostCategoryDto.categoryName,
+          parentCategoryId: postCategory.parentCategory.id,
         });
       } catch (e) {}
     }
@@ -106,14 +127,25 @@ export class PostCategoryService {
       );
     }
 
-    const postCategory = await this.postCategoryRepository.findPostCategoryById(
-      id,
-    );
-
     if (postCategory.user.id !== userId) {
       throw new UnauthorizedException(
         constants.errorMessages.UNAUTHORIZED_USER,
       );
+    }
+
+    if (modifyPostCategoryDto.parentCategoryId) {
+      const parentCategory =
+        await this.postCategoryRepository.findPostCategoryById(
+          modifyPostCategoryDto.parentCategoryId,
+        );
+
+      if (parentCategory.parentCategory !== null) {
+        throw new BadRequestException(
+          constants.errorMessages.CHILD_CANNOT_BE_PARENT_CATEGORY,
+        );
+      }
+
+      modifyPostCategoryDto.parentCategory = parentCategory;
     }
 
     return await this.postCategoryRepository.updatePostCategoryById(

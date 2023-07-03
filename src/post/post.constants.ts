@@ -13,6 +13,12 @@ const constants = {
     DUPLICATED_POST_CATEGORY: '이미 존재하는 카테고리입니다.',
     REFERENCED_CATEGORY: '게시글이 포함된 카테고리는 삭제가 불가능합니다.',
     FAIL_TO_DELETE_CATEGORY: '게시글 삭제에 실패했습니다.',
+    NOT_FOUND_POST_CATEGORY: '존재하지 않는 게시글 카테고리입니다.',
+    NOT_FOUND_PARENT_POST_CATEGORY:
+      '존재하지 않는 게시글 카테고리 대분류 입니다.',
+    FAIL_TO_CREATE_POST_CATEGORY: '게시글 카테고리 생성에 실패했습니다.',
+    CHILD_CANNOT_BE_PARENT_CATEGORY:
+      '게시글 소분류는 대분류로 적용될 수 없습니다.',
   },
   props: {
     USER_IDX: 'user_index',

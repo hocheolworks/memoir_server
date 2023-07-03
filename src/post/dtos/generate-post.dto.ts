@@ -1,6 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { User } from 'src/user/user.entity';
 import { PostDto } from './post.dto';
+import { Transform } from 'class-transformer';
 
 export class GeneratePostDto extends PickType(PostDto, [
   'postTitle',
@@ -15,18 +16,13 @@ export class GeneratePostDto extends PickType(PostDto, [
   postBody: string;
 
   @ApiProperty({
-    example: 'backend',
-    description: '게시글의 대분류',
+    example: 3,
+    description: '게시글 카테고리 ID',
     required: false,
+    type: Number,
   })
-  parentCategory?: string;
-
-  @ApiProperty({
-    example: 'nestjs',
-    description: '글의 소분류',
-    required: false,
-  })
-  childCategory?: string;
+  @Transform(({ value }) => (value ? Number(value) : null))
+  postCategoryId: number;
 
   sha?: string;
   accessToken?: string;

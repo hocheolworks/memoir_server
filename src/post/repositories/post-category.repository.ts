@@ -44,11 +44,12 @@ export class PostCategoryRepository {
     const postCategory = await this.postCategoryRepository
       .createQueryBuilder('pc')
       .leftJoinAndSelect('pc.user', 'user')
+      .leftJoinAndSelect('pc.parentCategory', 'ppc')
       .where('pc.id = :id', { id })
       .getOne();
 
     if (!postCategory) {
-      throw new BadRequestException(
+      throw new NotFoundException(
         constants.errorMessages.POST_CATEGORY_NOT_FOUND,
       );
     }
@@ -61,15 +62,15 @@ export class PostCategoryRepository {
       .createQueryBuilder('pc')
       .where('1=1');
 
-    if (findPostCategoryDto.parentCategory) {
-      postCategoryQuery.andWhere('pc.parentCategory = :parentCategory', {
-        parentCategory: findPostCategoryDto.parentCategory,
+    if (findPostCategoryDto.parentCategoryId) {
+      postCategoryQuery.andWhere('pc.parentCategoryId = :parentCategoryId', {
+        parentCategoryId: findPostCategoryDto.parentCategoryId,
       });
     }
 
-    if (findPostCategoryDto.childCategory) {
-      postCategoryQuery.andWhere('pc.childCategory = :childCategory', {
-        childCategory: findPostCategoryDto.childCategory,
+    if (findPostCategoryDto.categoryName) {
+      postCategoryQuery.andWhere('pc.categoryName = :categoryName', {
+        categoryName: findPostCategoryDto.categoryName,
       });
     }
 
@@ -99,7 +100,8 @@ export class PostCategoryRepository {
   async findPostCategoryList(findPostCategoryDto: FindPostCategoryDto) {
     const query = this.postCategoryRepository
       .createQueryBuilder('pc')
-      .leftJoinAndSelect('pc.user', 'u');
+      .leftJoinAndSelect('pc.user', 'u')
+      .leftJoinAndSelect('pc.parentCategory', 'ppc');
 
     if (findPostCategoryDto.userId) {
       query.andWhere('u.id = :userId', {
@@ -110,6 +112,12 @@ export class PostCategoryRepository {
     if (findPostCategoryDto.githubUserName) {
       query.andWhere('u.githubUserName = :githubUserName', {
         githubUserName: findPostCategoryDto.githubUserName,
+      });
+    }
+
+    if (findPostCategoryDto.parentCategoryId) {
+      query.andWhere('ppc.id = :parentCategoryId', {
+        parentCategoryId: findPostCategoryDto.parentCategoryId,
       });
     }
 

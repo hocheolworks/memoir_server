@@ -11,7 +11,15 @@ export class FindPostCategoryDto {
   githubUserName?: string;
 
   userId?: number;
-  parentCategory?: string;
-  childCategory?: string;
+
+  @ApiProperty({
+    example: 1,
+    description: '게시글 카테고리 대분류(id)',
+    required: false,
+  })
+  parentCategoryId?: number;
+
+  categoryName?: string;
   user?: User;
+  id?: number;
 }

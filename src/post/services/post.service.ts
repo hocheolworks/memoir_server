@@ -11,8 +11,6 @@ import { firstValueFrom } from 'rxjs';
 import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 import { UserService } from 'src/user/user.service';
 import { DataSource } from 'typeorm';
-import { FindPostCategoryDto } from '../dtos/find-post-category.dto';
-import { GeneratePostCategoryDto } from '../dtos/generate-post-category.dto';
 import { GeneratePostDto } from '../dtos/generate-post.dto';
 import { ModifyPostCategoryDto } from '../dtos/modify-post-category.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
@@ -80,6 +78,14 @@ export class PostService {
     await queryRunner.startTransaction();
 
     let sha: string;
+    let postCategory: PostCategory;
+
+    if (generatePostDto.postCategoryId) {
+      postCategory = await this.postCategoryRepository.findPostCategoryById(
+        generatePostDto.postCategoryId,
+      );
+    }
+
     try {
       const postUrl = generatePostResult.data.content.html_url;
       sha = generatePostResult.data.content.sha;
@@ -87,44 +93,12 @@ export class PostService {
       generatePostDto.postUrl = postUrl;
       generatePostDto.sha = sha;
 
-      const findPostCategoryDto = new FindPostCategoryDto();
-      findPostCategoryDto.parentCategory = generatePostDto.parentCategory;
-      findPostCategoryDto.childCategory = generatePostDto.childCategory;
-      findPostCategoryDto.user = generatePostDto.user;
-
-      let postCategoryConflictCheck: PostCategory;
-
-      try {
-        postCategoryConflictCheck =
-          await this.postCategoryRepository.findPostCategory(
-            findPostCategoryDto,
-          );
-      } catch (e) {}
-
       let post: Post;
 
-      if (postCategoryConflictCheck) {
-        post = await this.postRepository.createPost(
-          { ...generatePostDto, postCategory: postCategoryConflictCheck },
-          queryRunner.manager,
-        );
-      } else {
-        const generatePostCategoryDto = new GeneratePostCategoryDto();
-        generatePostCategoryDto.parentCategory = generatePostDto.parentCategory;
-        generatePostCategoryDto.childCategory = generatePostDto.childCategory;
-        generatePostCategoryDto.user = generatePostDto.user;
-
-        const postCategory =
-          await this.postCategoryRepository.createPostCategory(
-            generatePostCategoryDto,
-            queryRunner.manager,
-          );
-
-        post = await this.postRepository.createPost(
-          { ...generatePostDto, postCategory },
-          queryRunner.manager,
-        );
-      }
+      post = await this.postRepository.createPost(
+        { ...generatePostDto, postCategory: postCategory },
+        queryRunner.manager,
+      );
 
       await queryRunner.commitTransaction();
 
@@ -276,8 +250,8 @@ export class PostService {
 
     try {
       const updateCategoryDto = new ModifyPostCategoryDto();
-      updateCategoryDto.parentCategory = modifyPostDto.parentCategory;
-      updateCategoryDto.childCategory = modifyPostDto.childCategory;
+      updateCategoryDto.parentCategoryId = modifyPostDto.parentCategoryId;
+      updateCategoryDto.categoryName = modifyPostDto.categoryName;
 
       await this.postRepository.updatePostById(
         id,
@@ -285,7 +259,10 @@ export class PostService {
         queryRunner.manager,
       );
 
-      if (updateCategoryDto.childCategory || updateCategoryDto.parentCategory) {
+      if (
+        updateCategoryDto.categoryName ||
+        updateCategoryDto.parentCategoryId
+      ) {
         await this.postCategoryRepository.updatePostCategoryById(
           id,
           updateCategoryDto,

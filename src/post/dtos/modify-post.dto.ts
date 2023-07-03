@@ -2,6 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { User } from 'src/user/user.entity';
 import { PostDto } from './post.dto';
+import { PostCategory } from '../entities/post-category.entity';
 
 export class ModifyPostDto extends PickType(PostDto, ['postTitle']) {
   @ApiProperty({
@@ -14,18 +15,20 @@ export class ModifyPostDto extends PickType(PostDto, ['postTitle']) {
   postBody: string;
 
   @ApiProperty({
-    example: 'backend',
-    description: '게시글의 대분류',
+    example: 1,
+    description: '게시글 카테고리 대분류(id)',
     required: false,
   })
-  parentCategory?: string;
+  parentCategoryId?: number;
+
+  parentCategory: PostCategory;
 
   @ApiProperty({
     example: 'nestjs',
-    description: '글의 소분류',
+    description: '게시글 카테고리 이름',
     required: false,
   })
-  childCategory?: string;
+  categoryName?: string;
 
   sha?: string;
   accessToken?: string;

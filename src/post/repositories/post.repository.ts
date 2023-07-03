@@ -35,24 +35,20 @@ export class PostRepository {
   }
 
   async findPosts(findPostListDto: FindPostListDto) {
-    const { userId, parentCategory, childCategory } = findPostListDto;
+    const { userId, postCategoryId } = findPostListDto;
 
     const query = this.postRepository
       .createQueryBuilder('p')
-      .leftJoin('p.postCategory', 'pc')
-      .addSelect(['pc.id', 'pc.parentCategory', 'pc.childCategory'])
+      .leftJoinAndSelect('p.postCategory', 'pc')
+      .leftJoinAndSelect('pc.parentCategory', 'ppc')
       .leftJoinAndSelect('p.user', 'user');
 
     if (userId) {
       query.andWhere('p.userId = :userId', { userId });
     }
 
-    if (parentCategory) {
-      query.andWhere('pc.parentCategory = :parentCategory', { parentCategory });
-    }
-
-    if (childCategory) {
-      query.andWhere('pc.childCategory = :childCategory', { childCategory });
+    if (postCategoryId) {
+      query.andWhere('pc.id = :postCategoryId', { postCategoryId });
     }
 
     const [list, count] = await query.getManyAndCount();
@@ -67,8 +63,8 @@ export class PostRepository {
   async findPostListOrderByViews(page: number, pageSize: number) {
     const [list, count] = await this.postRepository
       .createQueryBuilder('p')
-      .leftJoin('p.postCategory', 'pc')
-      .addSelect(['pc.id', 'pc.parentCategory', 'pc.childCategory'])
+      .leftJoinAndSelect('p.postCategory', 'pc')
+      .leftJoinAndSelect('pc.parentCategory', 'ppc')
       .leftJoinAndSelect('p.user', 'user')
       .orderBy('p.views', 'DESC')
       .skip(pageSize * (page - 1))

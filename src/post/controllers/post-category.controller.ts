@@ -45,8 +45,6 @@ export class PostCategoryController {
     @Body() generatePostCategoryDto: GeneratePostCategoryDto,
     @GetUserInfo() userInfo: User,
   ) {
-    console.log(userInfo);
-
     generatePostCategoryDto.user = userInfo;
     return await this.postCategoryService.generatePostCategory(
       generatePostCategoryDto,
