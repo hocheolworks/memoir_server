@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Entity, Column, Index } from 'typeorm';
 import constants from './user.constants';
-import { Length } from 'class-validator';
+import { IsOptional, Length } from 'class-validator';
 
 @Entity({ name: 'User', schema: process.env.DB_SCHEMA_NAME })
 @Index(constants.props.UNIQUE_USER_EMAIL, ['email'], {
@@ -61,6 +61,7 @@ export class User extends CoreEntity {
     comment: '블로그 소개 글',
   })
   @Length(1, 1000)
+  @IsOptional()
   blogIntroduction: string;
 
   accessToken?: string;
