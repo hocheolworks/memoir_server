@@ -15,4 +15,5 @@ export class ModifyPostCategoryDto extends PickType(PostCategory, [
   parentCategory: PostCategory;
 
   user: User;
+  sha: string;
 }

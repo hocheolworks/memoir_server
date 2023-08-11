@@ -225,8 +225,9 @@ export class PostService {
       sha,
     };
 
+    let response: AxiosResponse;
     try {
-      await firstValueFrom(
+      response = await firstValueFrom(
         this.httpService.put(
           `https://api.github.com/repos/${userInfo.githubUserName}/memoir-${userInfo.githubUserName}/contents/${modifyPostDto.postTitle}.md`,
           body,
@@ -252,6 +253,7 @@ export class PostService {
       const updateCategoryDto = new ModifyPostCategoryDto();
       updateCategoryDto.parentCategoryId = modifyPostDto.parentCategoryId;
       updateCategoryDto.categoryName = modifyPostDto.categoryName;
+      updateCategoryDto.sha = response.data.commit.sha;
 
       await this.postRepository.updatePostById(
         id,
