@@ -205,19 +205,36 @@ export class PostService {
       );
     }
 
-    let sha: string;
-    sha = modifyTarget.sha;
-
     const userInfo = modifyPostDto.user;
+
+    const beforeEncodingPostBody = modifyPostDto.postBody;
+    const base64String = Buffer.from(beforeEncodingPostBody).toString('base64');
+    const content = base64String;
 
     const headers = {
       Accept: 'application/vnd.github+json',
       Authorization: userInfo.accessToken,
     };
 
-    const beforeEncodingPostBody = modifyPostDto.postBody;
-    const base64String = Buffer.from(beforeEncodingPostBody).toString('base64');
-    const content = base64String;
+    let post;
+    let sha: string;
+
+    try {
+      post = await firstValueFrom(
+        this.httpService.get(
+          `https://api.github.com/repos/${userInfo.githubUserName}/memoir-${userInfo.githubUserName}/contents/${modifyTarget.postTitle}.md`,
+          {
+            headers,
+          },
+        ),
+      );
+    } catch (e) {
+      await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
+
+      throw new BadRequestException(e.response.data);
+    }
+
+    sha = post.data.sha;
 
     const body = {
       message: `${new Date()}에 수정된 memoir`,
@@ -225,7 +242,7 @@ export class PostService {
       sha,
     };
 
-    let response: AxiosResponse;
+    let response;
     try {
       response = await firstValueFrom(
         this.httpService.put(
@@ -239,9 +256,7 @@ export class PostService {
     } catch (e) {
       await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
 
-      throw new BadRequestException(
-        constants.errorMessages.FAIL_TO_UPDATE_TO_GITHUB,
-      );
+      throw new BadRequestException(e.response.data);
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -274,6 +289,8 @@ export class PostService {
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner.rollbackTransaction();
+      console.log(e);
+      throw new BadRequestException(e);
     } finally {
       await queryRunner.release();
     }

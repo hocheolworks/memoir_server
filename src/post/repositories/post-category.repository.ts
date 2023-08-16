@@ -154,7 +154,7 @@ export class PostCategoryRepository {
       updateResult = await this.postCategoryRepository.update(id, instance);
     }
 
-    if (!updateResult || updateResult.affected === 0) {
+    if (!updateResult || updateResult.affected !== 0) {
       throw new BadRequestException(constants.errorMessages.FAIL_TO_UPDATE);
     }
   }
