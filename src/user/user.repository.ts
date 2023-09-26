@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { GenerateUserDto } from './dtos/generate-user.dto';
 import { User } from './user.entity';
 import { FindUserDto } from './dtos/find-user.dto';
+import { ModifyUserDto } from './dtos/modify-user.dto';
 
 @Injectable()
 export class UserRepository {
@@ -58,5 +59,14 @@ export class UserRepository {
     }
 
     return user;
+  }
+
+  async updateUserById(id: number, modifyUserDto: ModifyUserDto) {
+    const instance = this.usersRepository.create(modifyUserDto);
+    await this.usersRepository.update(id, instance);
+
+    const result = await this.findUser({ id });
+
+    return result;
   }
 }

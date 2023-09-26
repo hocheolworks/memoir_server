@@ -13,6 +13,7 @@ import { UserRepository } from './user.repository';
 import { GenerateUserDto } from './dtos/generate-user.dto';
 import { ThirdPartyLoggerService } from 'src/logger/third-party-logger.service';
 import { FindUserDto } from './dtos/find-user.dto';
+import { ModifyUserDto } from './dtos/modify-user.dto';
 
 @Injectable()
 export class UserService {
@@ -169,5 +170,9 @@ export class UserService {
     }
 
     return memoirUser;
+  }
+
+  async modifyUserById(id: number, modifyUserDto: ModifyUserDto) {
+    return await this.userRepository.updateUserById(id, modifyUserDto);
   }
 }

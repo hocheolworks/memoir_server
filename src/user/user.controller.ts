@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -22,6 +23,7 @@ import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { GetUserInfo } from 'src/common/decorators/user.decorator';
 import { SuccessResponse } from 'src/common/decorators/success-response-schema.dto';
 import { UserDto } from './dtos/user.dto';
+import { ModifyUserDto } from './dtos/modify-user.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -126,5 +128,33 @@ export class UserController {
     memoirGithubUserInfo['description'] = userInfo.description;
 
     return memoirGithubUserInfo;
+  }
+
+  @ApiOperation({
+    summary: '토큰으로 유저 정보를 수정합니다.',
+  })
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: UserInfoDto,
+      exampleTitle: '요청 성공 응답',
+    },
+  ])
+  @ApiBearerAuth(constants.props.BearerToken)
+  @UseGuards(MemoirUserGuard)
+  @Put('/me')
+  async modifyUserInfoByToken(
+    @GetUserInfo() userInfo: UserInfoDto,
+    @Body() modifyUserDto: ModifyUserDto,
+  ) {
+    const memoirGithubUserInfo = await this.userService.findUser({
+      githubUserName: userInfo.githubUserName,
+    });
+
+    const result = await this.userService.modifyUserById(
+      memoirGithubUserInfo.id,
+      modifyUserDto,
+    );
+
+    return result;
   }
 }
