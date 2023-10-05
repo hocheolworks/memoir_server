@@ -30,7 +30,7 @@ export class Post extends CoreEntity {
     comment: '게시글 제목',
   })
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(200)
   @Index()
   postTitle: string;
 

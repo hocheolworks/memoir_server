@@ -61,7 +61,7 @@ export class ErrorLog extends CoreEntity {
   @Column({
     nullable: true,
     type: 'varchar',
-    length: 2000,
+    length: 30000,
     comment: 'request body',
   })
   requestBody: string;
