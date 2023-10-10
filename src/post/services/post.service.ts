@@ -31,6 +31,22 @@ export class PostService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
   ) {}
+
+  async findPostUrlList() {
+    const findPostListDto = new FindPostListDto();
+
+    const result = await this.postRepository.findPosts(findPostListDto);
+    const postList = result.list;
+
+    const urlList = [];
+    for (const post of postList) {
+      const url = `${post.user.githubUserName}/${post.id}`;
+      urlList.push(url);
+    }
+
+    return urlList;
+  }
+
   async generatePost(generatePostDto: GeneratePostDto) {
     const userInfo = generatePostDto.user;
     const headers = {

@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PostService } from './services/post.service';
-import { PostController } from './controllers/post.controller';
+import {
+  PostController,
+  SiteMapController,
+} from './controllers/post.controller';
 import { HttpModule } from '@nestjs/axios';
 import { PostRepository } from './repositories/post.repository';
 import { PostCategoryRepository } from './repositories/post-category.repository';
@@ -12,7 +15,7 @@ import { PostCategoryService } from './services/post-category.service';
 
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([Post, PostCategory])],
-  controllers: [PostController, PostCategoryController],
+  controllers: [PostController, PostCategoryController, SiteMapController],
   providers: [
     PostService,
     PostRepository,

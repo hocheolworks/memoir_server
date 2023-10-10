@@ -23,6 +23,19 @@ import { UserInfoDto } from 'src/common/dtos/userInfo.dto';
 import { ModifyPostDto } from '../dtos/modify-post.dto';
 import { FindPostListDto } from '../dtos/find-post-list.dto';
 
+@ApiTags('Sitemap')
+@Controller()
+export class SiteMapController {
+  constructor(private readonly postService: PostService) {}
+
+  @Get('sitemap')
+  async findPostUrlList() {
+    const result = await this.postService.findPostUrlList();
+
+    return result;
+  }
+}
+
 @ApiTags('Post')
 @Controller('posts')
 export class PostController {
