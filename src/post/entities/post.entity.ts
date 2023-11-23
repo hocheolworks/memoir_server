@@ -49,6 +49,20 @@ export class Post extends CoreEntity {
   postThumbnailImageUrl: string;
 
   @ApiProperty({
+    example: '이 글은 말이죠,,',
+    description: '게시글 요약',
+    required: false,
+  })
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    length: 300,
+    comment: '게시글 요약',
+  })
+  @MaxLength(300)
+  postSummary: string;
+
+  @ApiProperty({
     example:
       'https://github.com/JeongCheolLee/memoir-JeongCheolLee/blob/main/%ED%98%B8%EC%A0%95%EC%9D%B4%20%EA%B8%80%20%ED%9B%94%EC%B9%98%EA%B8%B0',
     description: '게시글 URL',

@@ -6,6 +6,7 @@ import { Transform } from 'class-transformer';
 export class GeneratePostDto extends PickType(PostDto, [
   'postTitle',
   'postCategory',
+  'postSummary',
 ]) {
   @ApiProperty({
     example:
