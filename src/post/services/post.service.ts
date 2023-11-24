@@ -174,11 +174,8 @@ export class PostService {
       throw new NotFoundException(constants.errorMessages.POST_NOT_FOUND);
     }
 
-    const token = process.env.GIT_TOKEN;
-
     const headers = {
       Accept: 'application/vnd.github+json',
-      Authorization: token,
     };
 
     let getPostRequest: AxiosResponse;
