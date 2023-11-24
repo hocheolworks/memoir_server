@@ -147,9 +147,12 @@ export class UserService {
 
     try {
       githubUserInfo = await firstValueFrom(
-        this.httpService.get(`https://api.github.com/users/${githubUserName}`, {
-          headers,
-        }),
+        this.httpService.get(
+          `https://${process.env.GITAPI_CLIENT_ID}:${process.env.GITAPI_CLIENT_SECRET}@api.github.com/users/${githubUserName}`,
+          {
+            headers,
+          },
+        ),
       );
     } catch (e) {
       await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);

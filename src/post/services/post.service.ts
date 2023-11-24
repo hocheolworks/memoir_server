@@ -185,7 +185,7 @@ export class PostService {
     try {
       getPostRequest = await firstValueFrom(
         this.httpService.get(
-          `https://api.github.com/repos/${post.user.githubUserName}/memoir-${post.user.githubUserName}/contents/${post.postTitle}.md`,
+          `https://${process.env.GITAPI_CLIENT_ID}:${process.env.GITAPI_CLIENT_SECRET}@api.github.com/repos/${post.user.githubUserName}/memoir-${post.user.githubUserName}/contents/${post.postTitle}.md`,
           {
             headers,
           },
@@ -308,7 +308,6 @@ export class PostService {
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      console.log(e);
       throw new BadRequestException(e);
     } finally {
       await queryRunner.release();

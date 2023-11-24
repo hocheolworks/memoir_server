@@ -37,7 +37,10 @@ export class GithubUserGuard implements CanActivate {
 
     try {
       getUserInfoResult = await firstValueFrom(
-        this.httpService.get(`https://api.github.com/user`, { headers }),
+        this.httpService.get(
+          `https://${process.env.GITAPI_CLIENT_ID}:${process.env.GITAPI_CLIENT_SECRET}@api.github.com/user`,
+          { headers },
+        ),
       );
     } catch (e) {
       await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);

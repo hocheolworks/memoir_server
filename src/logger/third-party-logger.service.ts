@@ -31,7 +31,6 @@ export class ThirdPartyLoggerService {
           errorObject.response.data.toString();
       }
     } else {
-      console.log(errorObject);
     }
 
     const insertResult = await this.errorLogRepository.insert(
