@@ -33,16 +33,17 @@ export class GithubUserGuard implements CanActivate {
       Authorization: token,
     };
 
+    console.log('test', '>>>>>', 'headers');
+
     let getUserInfoResult: AxiosResponse;
 
     try {
       getUserInfoResult = await firstValueFrom(
-        this.httpService.get(
-          `https://${process.env.GITAPI_CLIENT_ID}:${process.env.GITAPI_CLIENT_SECRET}@api.github.com/user`,
-          { headers },
-        ),
+        this.httpService.get(`https://api.github.com/user`, { headers }),
       );
     } catch (e) {
+      console.log('here');
+      console.log(e.response);
       await this.thirdPartyLoggerService.createThirdPartyErrorLog(e);
 
       throw new BadRequestException(constants.errorMessages.INVALID_TOKEN);

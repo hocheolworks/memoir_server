@@ -115,6 +115,8 @@ export class UserService {
       Authorization: accessToken,
     };
 
+    console.log('>>>>', headers);
+
     const body = {
       name: `memoir-${generateUserDto.githubUserName}`,
       description: `${constants.props.REPOSITORY_DESCRIPTION}`,
