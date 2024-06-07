@@ -74,7 +74,7 @@ export class Post extends CoreEntity {
     length: 300,
     comment: '게시글 URL',
   })
-  @MaxLength(300)
+  @MaxLength(1000)
   postUrl: string;
 
   @ApiProperty({
