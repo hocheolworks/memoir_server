@@ -47,6 +47,8 @@ jobs:
     steps:
       - name: rm legacy envfile
         run: rm -rf ./.envs/.env.production
+      - name: ENV pwd
+        run: pwd
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v1
         with:
@@ -68,8 +70,6 @@ jobs:
           envkey_CDN_URL: ${{secrets.CDN_URL}}
           file_name: .env.production
           directory: ./.envs
-      - name: ENV pwd
-        run: pwd
       - name: ENV test
         run: cat .envs/.env.production
       - name: User add for docker Login
