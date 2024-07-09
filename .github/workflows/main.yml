@@ -1,0 +1,88 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+env:
+  DOCKER_IMAGE: ghcr.io/jeongcheollee/memoir_server
+  VERSION: ${{ github.sha }}
+  NAME: cicd_test
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+      - name: Set up docker buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Login to ghcr
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: jeongcheollee
+          password: ${{ secrets.BLISS_GITHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:latest
+
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: [self-hosted, Linux, x64]
+    steps:
+      - name: rm legacy envfile
+        run: rm -rf ./.envs/.env.production
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_PORT: ${{ secrets.DB_PORT }}
+          envkey_DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_DB_LOGGING: ${{ secrets.DB_LOGGING }}
+          envkey_DB_SCHEMA_NAME: ''
+          envkey_DB_SSL: ''
+          envkey_GITAPI_CLIENT_SECRET: ${{ secrets.GITAPI_CLIENT_SECRET }}
+          envkey_GITAPI_CLIENT_ID: ${{ secrets.GITAPI_CLIENT_ID }}
+          envket_GIT_TOKEN: ${{secrets.GIT_TOKEN}}
+          envkey_AWS_BUCKET_REGION: ${{secrets.AWS_BUCKET_REGION}}
+          envkey_AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
+          envkey_AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          envkey_AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          envkey_CDN_URL: ${{secrets.CDN_URL}}
+          file_name: .env.production
+          directory: ./.envs
+      - name: ENV pwd
+        run: pwd
+      - name: ENV test
+        run: cat .envs/.env.production
+      - name: User add for docker Login
+        run: |
+          sudo usermod -aG docker $USER
+          newgrp docker
+      - name: Login to ghcr
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: jeongcheollee
+          password: ${{ secrets.BLISS_GITHUB_TOKEN }}
+      - name: Docker run
+        run: |
+          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
+          docker run --env-file ./.envs/.env.production -d -p 3000:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest
