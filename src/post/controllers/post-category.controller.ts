@@ -71,7 +71,7 @@ export class PostCategoryController {
   }
 
   @ApiOperation({
-    summary: '게시글 카테고리를 수정합니다.',
+    summary: '게시글 카테고리를 수정합니다..',
   })
   @HttpCode(204)
   @ApiBearerAuth(constants.props.BearerToken)
