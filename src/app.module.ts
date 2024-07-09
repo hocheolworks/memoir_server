@@ -30,6 +30,9 @@ if (process.env.NODE_ENV === 'production') envFilePath = 'envs/.env.production';
       autoLoadEntities: true,
       synchronize: true,
       logging: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
     UserModule,
     LoggerModule,
